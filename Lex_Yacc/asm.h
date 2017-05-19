@@ -28,6 +28,7 @@ struct tab_instrus {
 } tab_code;
 
 void Init_asm();
+void set_mainJump();
 void add_instru(int a, int b, int c, int d);
 void OperationArith (int typeOperation);
 void Or();

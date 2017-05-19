@@ -1,9 +1,9 @@
-SRC= test.c table.c asm.c boucle.c
+SRC= test.c table.c asm.c boucle.c fonctions.c
 #SRC contient les fichiers C
 OBJ=$(SRC:.c=.o)
 all: compilator
 clean:
-	rm *.o compilator test
+	rm -f *.o compilator test
 y.pdf : y.dot
 	dot -Tpdf y.dot > y.pdf
 y.tab.c y.tab.h y.dot y.output : source.yacc

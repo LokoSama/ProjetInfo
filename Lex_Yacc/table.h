@@ -5,15 +5,13 @@
 #include <stdio.h>
 #include "asm.h"
 
-struct symbole
-{
+struct symbole {
   char id[16];
   int init;
   int depth;
 };
 
-struct table
-{
+struct table {
   struct symbole tab[2048];
   int index;
   int tmp_var;

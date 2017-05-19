@@ -1,16 +1,13 @@
 #include "asm.h"
 
-void
-Init_asm ()
-{
-// Tableau contenant le code ASM
-  tab_code.index = 0;
+void Init_asm () {
+	// Tableau contenant le code ASM
+	//La premiere ligne du tab_code sera toujours un JMP au main
+  tab_code.index = 1;
 }
 
 //ajout d'une instruction a b c d à la fin du code
-void
-add_instru (int a, int b, int c, int d)
-{
+void add_instru (int a, int b, int c, int d) {
   tab_code.tab[tab_code.index][0] = a;
   tab_code.tab[tab_code.index][1] = b;
   tab_code.tab[tab_code.index][2] = c;
@@ -18,11 +15,15 @@ add_instru (int a, int b, int c, int d)
   tab_code.index++;
 }
 
-//TODO Le résultat de l'addition est stocké dans R0 pour le moment, le mettre dans $$ ?
+void set_mainJump() {
+	tab_code.tab[0][0] = JMP;
+  tab_code.tab[0][1] = tab_code.index;
+  tab_code.tab[0][2] = NOTU;
+  tab_code.tab[0][3] = NOTU;
+}
+
 //typeOperation = ADD, MUL, SOU, DIV
-void
-OperationArith (int typeOperation)
-{
+void OperationArith (int typeOperation) {
   //on récupère les valeurs dans la mémoire tmp
   add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);
   add_instru (LOAD, 1, tab_sym.tmp_var - 2, NOTU);
@@ -74,13 +75,13 @@ void ComparaisonLogique(int operateur) {
 	tab_sym.tmp_var--;      	
 }
 
-void Not(){
-//on récupère la valeur dans la mémoire tmp
-add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);;
-//on effectue l'opération logique
-add_instru(AFC,1,0,NOTU);
-add_instru(EQU,0,0,1);
-add_instru(STORE, tab_sym.tmp_var -1, 0, NOTU);
+void Not() {
+	//on récupère la valeur dans la mémoire tmp
+	add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);;
+	//on effectue l'opération logique
+	add_instru(AFC,1,0,NOTU);
+	add_instru(EQU,0,0,1);
+	add_instru(STORE, tab_sym.tmp_var -1, 0, NOTU);
 }
 
 void Jump(int typeJump) { //typeJump attend JMP ou JMPC
@@ -104,28 +105,23 @@ void Jump(int typeJump) { //typeJump attend JMP ou JMPC
 	}
 }
 
-void
-print_code ()
-{
+void print_code () {
   FILE *asmcode;
   printf ("ENTREE print_code\n");
   asmcode = fopen ("./code.asm", "w+");
   int i;
-  for (i = 0; i < tab_code.index; i++)
-    {
-      if (tab_code.tab[i][2] == NOTU)
-      	fprintf (asmcode, "%d %d _ _\n", tab_code.tab[i][0], tab_code.tab[i][1]);
-      else if (tab_code.tab[i][3] == NOTU)
-				fprintf (asmcode, "%d %d %d _\n", tab_code.tab[i][0],
-					 tab_code.tab[i][1], tab_code.tab[i][2]);
-      else
-				fprintf (asmcode, "%d %d %d %d \n", tab_code.tab[i][0],
-					 tab_code.tab[i][1], tab_code.tab[i][2], tab_code.tab[i][3]);
+  for (i = 0; i < tab_code.index; i++) {
+  	if (tab_code.tab[i][2] == NOTU)
+  		fprintf (asmcode, "%d %d _ _\n", tab_code.tab[i][0], tab_code.tab[i][1]);
+    else if (tab_code.tab[i][3] == NOTU)
+			fprintf (asmcode, "%d %d %d _\n", tab_code.tab[i][0], tab_code.tab[i][1], tab_code.tab[i][2]);
+    else
+			fprintf (asmcode, "%d %d %d %d \n", tab_code.tab[i][0], tab_code.tab[i][1], tab_code.tab[i][2], tab_code.tab[i][3]);
       //printf ("SORTIE print_code\n");
-    }
+  }
 
-  if (fclose (asmcode))
-    {
-      printf ("c'est l'echec \n ");
-    }
+  if (fclose (asmcode)) {
+  	printf ("c'est l'echec \n ");
+  }
 }
+

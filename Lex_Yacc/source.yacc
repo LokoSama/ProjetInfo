@@ -5,6 +5,10 @@
 #include "table.h"
 #include "asm.h"
 #include "boucle.h"
+#include "fonctions.h"
+
+//TODO : pour gérer les fonctions, il est nécessaire d'utiliser une zone de la mémoire de manière à stocker les adresses de retour, sous la forme d'une pile. Al'invocation, on empile la ligne de l'instru acutelle, et au return, on dépile cette valeur et on jump au haut de la pile grâce au registre LR (R14 ou autre). La valeur de retour est mise dans R0. 
+
 
 // TODO : Affectation , Invocation, if, while ... 
 int yylex(void);
@@ -30,8 +34,8 @@ int depth_act;
 %token tPf
 %token tCo
 %token tCf
-%token <str>tId
-%token <xInt>tNb
+%token <str> tId
+%token <xInt> tNb
 %token tIf
 
 %token <xInt> tInt
@@ -43,7 +47,7 @@ int depth_act;
 %token tEqLog
 %token tInclude
 %token tConst
-%token tMain
+%token <str> tMain
 %token <xFloat> tFloat
 
 %right tEq
@@ -61,34 +65,43 @@ int depth_act;
 
 %%
 Start : Fonction Start {printf("Start\n");}
-|
-;
-Fonction : tInt tId tPo Args tPf Body
-;
-Args :
-	  | Arg ListeArgs
+|//peut être vide
 ;
 
-ListeArgs : tVir Arg ListeArgs
+Fonction : tInt tMain {set_mainJump(); ajout_fonction($2, tab_code.index);} tPo Args tPf BodyReturn
+| tInt tId {ajout_fonction($2, tab_code.index);} tPo Args tPf BodyReturn
+;
+
+Args : Arg ListeArgs {incremente_nb_args();}
+			| //peut être vide
+;
+
+ListeArgs : tVir Arg ListeArgs {incremente_nb_args();}
 		  | //peut être vide
 ;
 
 Arg : tInt tId
 ;
 
+BodyReturn : tAo Instrus Return tAf
+;
+
+Return : tReturn ExpArithm tPvir {add_instru(JMP, depiler_retour(), NOTU, NOTU);}
+;
+
 Body : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus tAf {depth_act = Suppression_symboles(depth_act);}
 ;
 
-Instrus : 
-    | Instru Instrus 
+Instrus :  Instru Instrus 
+		    | //peut être vide	
 ;
 Instru : Declaration 
     | BoucleIf
     | While
     | Affectation
-    | Invocation
+    | Invocation tPvir													{tab_sym.tmp_var--;}
 ;
-Invocation : tId tPo Params tPf tPvir
+Invocation : tId tPo Params tPf									{empiler_retour(tab_code.index);}
 ;
 Param : ExpArithm
 ;
@@ -133,7 +146,7 @@ ExpArithm : ExpArithm tPlus ExpArithm {OperationArith(ADD);}
     | tId 														{add_instru(LOAD, 0, index_of($1), NOTU);
     																	 add_instru(STORE, tab_sym.tmp_var, 0, NOTU);
     																	 tab_sym.tmp_var++;}
-    | Invocation											//TODO
+    | Invocation
 ;
 
 Affectation : tId tEq ExpArithm tPvir {Affecte($1);}
@@ -142,7 +155,7 @@ Affectation : tId tEq ExpArithm tPvir {Affecte($1);}
 Declaration : tInt Decls tPvir 
 ;
 
-Decl1: tId			 {Ajout_symbole (0,$1, depth_act);}
+Decl1: tId						{Ajout_symbole (0,$1, depth_act);}
 	|tId tEq ExpArithm  {Ajout_symbole (1,$1, depth_act);}
 	
 ;
@@ -155,6 +168,8 @@ Decls : Decl1
 int main(void) {
 	  depth_act = Init_table();
 	  Init_asm();
+	  Init_tab_boucle();
+	  Init_fonctions();
 	  yyparse();
 	  print_code();
 	  print_table(3);

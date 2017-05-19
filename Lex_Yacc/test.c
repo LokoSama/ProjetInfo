@@ -1,10 +1,7 @@
-int bistou(){
-	int var1 ;
-	if (var1 == 3) {
-		int var2=2+3;
-		if (var1 == 3) {
-			int var3=8;
-		}
-		int var4 =2;
-	}
+int bistou() {
+	int var1; 
+	var1 = 5;
+	var1 = 18 ;
+	var1 = 23 ;
+	return 3;
 }
