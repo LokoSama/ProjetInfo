@@ -1,0 +1,8 @@
+[Inputs]
+=A[15:0]=
+=B[15:0]=
+=Ctrl_Alu[1:0]=
+[Outputs]
+=S[15:0]=
+=Flags[3:0]=
+[BiDir]

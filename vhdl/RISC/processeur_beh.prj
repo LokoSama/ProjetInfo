@@ -1,0 +1,8 @@
+vhdl work "pipeline.vhd"
+vhdl work "decode.vhd"
+verilog work "cores/bram32.v"
+verilog work "cores/bram16.v"
+vhdl work "bancRegistres.vhd"
+vhdl work "ALU.vhd"
+vhdl work "processeur.vhd"
+verilog work "/usr/local/Xilinx.ISE/13.4/ISE_DS/ISE//verilog/src/glbl.v"

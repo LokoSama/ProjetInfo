@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -lib "unisims_ver" -lib "unimacro_ver" -lib "xilinxcorelib_ver" -lib "secureip" -o "/home/basso/Bureau/Projet_Info/vhdl/RISC/processeur_isim_beh.exe" -prj "/home/basso/Bureau/Projet_Info/vhdl/RISC/processeur_beh.prj" "work.processeur" "work.glbl" 

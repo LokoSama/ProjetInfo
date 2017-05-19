@@ -1,0 +1,1 @@
+xst -intstyle ise -ifn "/home/basso/Bureau/Projet_Info/vhdl/RISC/Decode.xst" -ofn "/home/basso/Bureau/Projet_Info/vhdl/RISC/Decode.syr" 

@@ -1,0 +1,6 @@
+vhdl isim_temp "pipeline.vhd"
+vhdl isim_temp "decode.vhd"
+vhdl isim_temp "bancRegistres.vhd"
+vhdl isim_temp "ALU.vhd"
+vhdl isim_temp "processeur.vhd"
+verilog isim_temp "/usr/local/Xilinx.ISE/13.4/ISE_DS/ISE//verilog/src/glbl.v"

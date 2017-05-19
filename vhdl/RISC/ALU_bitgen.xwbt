@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=/home/basso/Bureau/Projet_Info/vhdl/RISC/ALU.ncd
+OUTFILE=/home/basso/Bureau/Projet_Info/vhdl/RISC/ALU.bit
+FAMILY=Spartan6
+PART=xc6slx16-3csg324
+WORKINGDIR=/home/basso/Bureau/Projet_Info/vhdl/RISC
+LICENSE=ISE
+USER_INFO=202067218_1777487267_210567960_160

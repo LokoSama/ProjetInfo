@@ -1,0 +1,8 @@
+Release 13.4 Drc O.87xd (lin64)
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+Tue Mar 28 18:04:27 2017
+
+drc -z ALU.ncd ALU.pcf
+
+DRC detected 0 errors and 0 warnings.

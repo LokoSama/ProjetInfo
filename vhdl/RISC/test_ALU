@@ -1,0 +1,20 @@
+entity test_ALU is
+end test_alu;
+architecture bench of test_ALU is
+	COMPONENT ALU is
+		Port ( A : in  STD_LOGIC_VECTOR (15 downto 0);
+           B : in  STD_LOGIC_VECTOR (15 downto 0);
+           S : out  STD_LOGIC_VECTOR (15 downto 0);
+           Ctrl_Alu : in  STD_LOGIC_VECTOR (1 downto 0);
+           Flags : out  STD_LOGIC_VECTOR (3 downto 0));
+	END COMPONENT;
+	
+	For all : ALU use entity work.ALU(data_flow);
+	
+	SIGNAL test_A, test_B, test_S : STD_LOGIC_VECTOR (15 downto 0);
+	
+	
+	BEGIN
+	
+	
+	END bench;
