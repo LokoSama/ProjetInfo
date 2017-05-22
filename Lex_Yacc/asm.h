@@ -19,6 +19,9 @@
 #define SUPE 13
 #define JMP 14
 #define JMPC 15
+#define LOADR 16
+#define STORR 17
+#define JMPR 18
 
 #define NOTU -1  //NOT_USED
 

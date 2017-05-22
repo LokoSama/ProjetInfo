@@ -57,6 +57,8 @@ int depth_act;
 %left tOr tAnd
 %left tNot
 
+%type <xInt> Params Param ParamsNext
+
 /* TODO : déclaration de fonctions
 					invocation de fonctions
 					pointeurs ?
@@ -86,7 +88,7 @@ Arg : tInt tId
 BodyReturn : tAo Instrus Return tAf
 ;
 
-Return : tReturn ExpArithm tPvir {add_instru(JMP, depiler_retour(), NOTU, NOTU);}
+Return : tReturn ExpArithm tPvir {add_instru(JMP, depiler_contexte(), NOTU, NOTU);}
 ;
 
 Body : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus tAf {depth_act = Suppression_symboles(depth_act);}
@@ -101,17 +103,24 @@ Instru : Declaration
     | Affectation
     | Invocation tPvir													{tab_sym.tmp_var--;}
 ;
-Invocation : tId tPo Params tPf									{empiler_retour(tab_code.index);}
+Invocation : tId tPo Params tPf									{
+																				if($3 != get_nb_args($1)){
+																					printf("Argument invalid\n");
+																				}
+																				else {
+																					empiler_contexte(tab_code.index);
+																					add_instru(JMP, tab_fonctions.tab[get_index($1)].index_definition, NOTU, NOTU);}
+																				}
 ;
-Param : ExpArithm
+Param : ExpArithm {$$=1;}
 ;
-Params : 
-| Param
-    | Param tVir ParamsNext
+Params : {$$=0;} 
+| Param {$$=1;}
+    | Param tVir ParamsNext {$$ = 1 + $3;}
 ;
 
-ParamsNext : Param
-| Param tVir ParamsNext
+ParamsNext : Param {$$=1;}
+| Param tVir ParamsNext {$$ = 1 + $3;}
 ;
 
 BoucleIf : If Else
@@ -172,6 +181,6 @@ int main(void) {
 	  Init_fonctions();
 	  yyparse();
 	  print_code();
-	  print_table(3);
+	  print_table(5);
 }
 

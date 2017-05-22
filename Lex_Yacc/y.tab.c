@@ -509,12 +509,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    67,    67,    68,    71,    71,    72,    72,    75,    76,
-      79,    80,    83,    86,    89,    92,    92,    95,    96,    98,
-      99,   100,   101,   102,   104,   106,   108,   109,   110,   113,
-     114,   117,   120,   120,   123,   124,   127,   127,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   146,   149,   152,   155,   158,   159,   162,   163
+       0,    69,    69,    70,    73,    73,    74,    74,    77,    78,
+      81,    82,    85,    88,    91,    94,    94,    97,    98,   100,
+     101,   102,   103,   104,   106,   115,   117,   118,   119,   122,
+     123,   126,   129,   129,   132,   133,   136,   136,   139,   140,
+     141,   142,   143,   144,   145,   146,   147,   148,   149,   150,
+     151,   152,   155,   158,   161,   164,   167,   168,   171,   172
 };
 #endif
 
@@ -1367,209 +1367,252 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 67 "source.yacc" /* yacc.c:1646  */
+#line 69 "source.yacc" /* yacc.c:1646  */
     {printf("Start\n");}
 #line 1373 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 71 "source.yacc" /* yacc.c:1646  */
+#line 73 "source.yacc" /* yacc.c:1646  */
     {set_mainJump(); ajout_fonction((yyvsp[0].str), tab_code.index);}
 #line 1379 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 72 "source.yacc" /* yacc.c:1646  */
+#line 74 "source.yacc" /* yacc.c:1646  */
     {ajout_fonction((yyvsp[0].str), tab_code.index);}
 #line 1385 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 75 "source.yacc" /* yacc.c:1646  */
+#line 77 "source.yacc" /* yacc.c:1646  */
     {incremente_nb_args();}
 #line 1391 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 79 "source.yacc" /* yacc.c:1646  */
+#line 81 "source.yacc" /* yacc.c:1646  */
     {incremente_nb_args();}
 #line 1397 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 89 "source.yacc" /* yacc.c:1646  */
-    {add_instru(JMP, depiler_retour(), NOTU, NOTU);}
+#line 91 "source.yacc" /* yacc.c:1646  */
+    {add_instru(JMP, depiler_contexte(), NOTU, NOTU);}
 #line 1403 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 92 "source.yacc" /* yacc.c:1646  */
+#line 94 "source.yacc" /* yacc.c:1646  */
     {depth_act = augmentation_profondeur(depth_act);}
 #line 1409 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 92 "source.yacc" /* yacc.c:1646  */
+#line 94 "source.yacc" /* yacc.c:1646  */
     {depth_act = Suppression_symboles(depth_act);}
 #line 1415 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 102 "source.yacc" /* yacc.c:1646  */
+#line 104 "source.yacc" /* yacc.c:1646  */
     {tab_sym.tmp_var--;}
 #line 1421 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 104 "source.yacc" /* yacc.c:1646  */
-    {empiler_retour(tab_code.index);}
-#line 1427 "y.tab.c" /* yacc.c:1646  */
+#line 106 "source.yacc" /* yacc.c:1646  */
+    {
+																				if((yyvsp[-1].xInt) != get_nb_args((yyvsp[-3].str))){
+																					printf("Argument invalid\n");
+																				}
+																				else {
+																					empiler_contexte(tab_code.index);
+																					add_instru(JMP, tab_fonctions.tab[get_index((yyvsp[-3].str))].index_definition, NOTU, NOTU);}
+																				}
+#line 1434 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 25:
+#line 115 "source.yacc" /* yacc.c:1646  */
+    {(yyval.xInt)=1;}
+#line 1440 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 117 "source.yacc" /* yacc.c:1646  */
+    {(yyval.xInt)=0;}
+#line 1446 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 27:
+#line 118 "source.yacc" /* yacc.c:1646  */
+    {(yyval.xInt)=1;}
+#line 1452 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 28:
+#line 119 "source.yacc" /* yacc.c:1646  */
+    {(yyval.xInt) = 1 + (yyvsp[0].xInt);}
+#line 1458 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 122 "source.yacc" /* yacc.c:1646  */
+    {(yyval.xInt)=1;}
+#line 1464 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 30:
+#line 123 "source.yacc" /* yacc.c:1646  */
+    {(yyval.xInt) = 1 + (yyvsp[0].xInt);}
+#line 1470 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 120 "source.yacc" /* yacc.c:1646  */
+#line 129 "source.yacc" /* yacc.c:1646  */
     {Jump(JMPC);}
-#line 1433 "y.tab.c" /* yacc.c:1646  */
+#line 1476 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 120 "source.yacc" /* yacc.c:1646  */
+#line 129 "source.yacc" /* yacc.c:1646  */
     {tab_code.tab[depiler()][1] = tab_code.index +1; Jump(JMP);}
-#line 1439 "y.tab.c" /* yacc.c:1646  */
+#line 1482 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 123 "source.yacc" /* yacc.c:1646  */
+#line 132 "source.yacc" /* yacc.c:1646  */
     {tab_code.tab[depiler()][1] = tab_code.index;}
-#line 1445 "y.tab.c" /* yacc.c:1646  */
+#line 1488 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 124 "source.yacc" /* yacc.c:1646  */
+#line 133 "source.yacc" /* yacc.c:1646  */
     {tab_code.tab[depiler()][1] = tab_code.index;}
-#line 1451 "y.tab.c" /* yacc.c:1646  */
+#line 1494 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 127 "source.yacc" /* yacc.c:1646  */
+#line 136 "source.yacc" /* yacc.c:1646  */
     {empiler(tab_code.index); Jump(JMPC);}
-#line 1457 "y.tab.c" /* yacc.c:1646  */
+#line 1500 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 127 "source.yacc" /* yacc.c:1646  */
+#line 136 "source.yacc" /* yacc.c:1646  */
     {tab_code.tab[depiler()][1] = tab_code.index +1; add_instru(JMP, depiler(), NOTU, NOTU);}
-#line 1463 "y.tab.c" /* yacc.c:1646  */
+#line 1506 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 130 "source.yacc" /* yacc.c:1646  */
+#line 139 "source.yacc" /* yacc.c:1646  */
     {OperationArith(ADD);}
-#line 1469 "y.tab.c" /* yacc.c:1646  */
+#line 1512 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 131 "source.yacc" /* yacc.c:1646  */
+#line 140 "source.yacc" /* yacc.c:1646  */
     {OperationArith(SOU);}
-#line 1475 "y.tab.c" /* yacc.c:1646  */
+#line 1518 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 132 "source.yacc" /* yacc.c:1646  */
+#line 141 "source.yacc" /* yacc.c:1646  */
     {OperationArith(MUL);}
-#line 1481 "y.tab.c" /* yacc.c:1646  */
+#line 1524 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 133 "source.yacc" /* yacc.c:1646  */
+#line 142 "source.yacc" /* yacc.c:1646  */
     {OperationArith(DIV);}
-#line 1487 "y.tab.c" /* yacc.c:1646  */
+#line 1530 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 134 "source.yacc" /* yacc.c:1646  */
+#line 143 "source.yacc" /* yacc.c:1646  */
     {Or();}
-#line 1493 "y.tab.c" /* yacc.c:1646  */
+#line 1536 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 135 "source.yacc" /* yacc.c:1646  */
+#line 144 "source.yacc" /* yacc.c:1646  */
     {And();}
-#line 1499 "y.tab.c" /* yacc.c:1646  */
+#line 1542 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 136 "source.yacc" /* yacc.c:1646  */
+#line 145 "source.yacc" /* yacc.c:1646  */
     {ComparaisonLogique(EQU);}
-#line 1505 "y.tab.c" /* yacc.c:1646  */
+#line 1548 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 137 "source.yacc" /* yacc.c:1646  */
+#line 146 "source.yacc" /* yacc.c:1646  */
     {ComparaisonLogique(INF);}
-#line 1511 "y.tab.c" /* yacc.c:1646  */
+#line 1554 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 138 "source.yacc" /* yacc.c:1646  */
+#line 147 "source.yacc" /* yacc.c:1646  */
     {ComparaisonLogique(SUP);}
-#line 1517 "y.tab.c" /* yacc.c:1646  */
+#line 1560 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 139 "source.yacc" /* yacc.c:1646  */
+#line 148 "source.yacc" /* yacc.c:1646  */
     {ComparaisonLogique(INFE);}
-#line 1523 "y.tab.c" /* yacc.c:1646  */
+#line 1566 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 140 "source.yacc" /* yacc.c:1646  */
+#line 149 "source.yacc" /* yacc.c:1646  */
     {ComparaisonLogique(SUPE);}
-#line 1529 "y.tab.c" /* yacc.c:1646  */
+#line 1572 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 141 "source.yacc" /* yacc.c:1646  */
+#line 150 "source.yacc" /* yacc.c:1646  */
     {Not();}
-#line 1535 "y.tab.c" /* yacc.c:1646  */
+#line 1578 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 143 "source.yacc" /* yacc.c:1646  */
+#line 152 "source.yacc" /* yacc.c:1646  */
     {add_instru(AFC, 0, (yyvsp[0].xInt), NOTU);
     																	 add_instru(STORE, tab_sym.tmp_var, 0, NOTU);
     																	 tab_sym.tmp_var++;}
-#line 1543 "y.tab.c" /* yacc.c:1646  */
+#line 1586 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 146 "source.yacc" /* yacc.c:1646  */
+#line 155 "source.yacc" /* yacc.c:1646  */
     {add_instru(LOAD, 0, index_of((yyvsp[0].str)), NOTU);
     																	 add_instru(STORE, tab_sym.tmp_var, 0, NOTU);
     																	 tab_sym.tmp_var++;}
-#line 1551 "y.tab.c" /* yacc.c:1646  */
+#line 1594 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 152 "source.yacc" /* yacc.c:1646  */
+#line 161 "source.yacc" /* yacc.c:1646  */
     {Affecte((yyvsp[-3].str));}
-#line 1557 "y.tab.c" /* yacc.c:1646  */
+#line 1600 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 158 "source.yacc" /* yacc.c:1646  */
+#line 167 "source.yacc" /* yacc.c:1646  */
     {Ajout_symbole (0,(yyvsp[0].str), depth_act);}
-#line 1563 "y.tab.c" /* yacc.c:1646  */
+#line 1606 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 159 "source.yacc" /* yacc.c:1646  */
+#line 168 "source.yacc" /* yacc.c:1646  */
     {Ajout_symbole (1,(yyvsp[-2].str), depth_act);}
-#line 1569 "y.tab.c" /* yacc.c:1646  */
+#line 1612 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1573 "y.tab.c" /* yacc.c:1646  */
+#line 1616 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1797,7 +1840,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 166 "source.yacc" /* yacc.c:1906  */
+#line 175 "source.yacc" /* yacc.c:1906  */
 
 
 int main(void) {
@@ -1807,6 +1850,6 @@ int main(void) {
 	  Init_fonctions();
 	  yyparse();
 	  print_code();
-	  print_table(3);
+	  print_table(5);
 }
 

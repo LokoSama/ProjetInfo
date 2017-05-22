@@ -3,11 +3,10 @@
 
 #include <string.h>
 #include <stdio.h>
+#include "asm.h"
 
-struct pile_adresses_retour {
-	int index;
-	int tab[2048];
-} tab_retour;
+#define LR 14
+#define BASEPILE 3000;
 
 struct struct_fonction {
 	char id[16];
@@ -21,12 +20,12 @@ struct tableau_f {
 } tab_fonctions;
 
 void Init_fonctions();
-void empiler_retour(int ligne);
-int depiler_retour();
+void empiler_contexte(int arg);
+int depiler_contexte();
 
 void ajout_fonction(char* id, int index_definition);
 void incremente_nb_args();
-int get_index_definition(char* id);
+int get_index(char* id);
 int get_nb_args(char* id);
 
 

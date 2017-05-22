@@ -1,4 +1,4 @@
-SRC= test.c table.c asm.c boucle.c fonctions.c
+SRC= table.c asm.c boucle.c fonctions.c
 #SRC contient les fichiers C
 OBJ=$(SRC:.c=.o)
 all: compilator

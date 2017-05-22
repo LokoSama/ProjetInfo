@@ -24,10 +24,10 @@ void set_mainJump() {
 
 //typeOperation = ADD, MUL, SOU, DIV
 void OperationArith (int typeOperation) {
-  //on récupère les valeurs dans la mémoire tmp
+	//on récupère les valeurs dans la mémoire tmp
   add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);
   add_instru (LOAD, 1, tab_sym.tmp_var - 2, NOTU);
-  //on effectue l'opération arithmétique et on stocke le résultat dans tmp
+   //on effectue l'opération arithmétique et on stocke le résultat dans tmp
   add_instru (typeOperation, 0, 0, 1);
   //stockage du résultat
   add_instru (STORE, tab_sym.tmp_var - 2, 0, NOTU);

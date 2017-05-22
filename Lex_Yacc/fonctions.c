@@ -1,18 +1,19 @@
 #include "fonctions.h"
 
-void Init_fonctions(){
-	tab_retour.index = 0;
+void Init_fonctions() {
 	tab_fonctions.index=0;
 }
 
-void empiler_retour(int ligne){
-	tab_retour.tab[tab_retour.index]=ligne;
-	tab_retour.index ++;
+void empiler_contexte(int arg) {
+	add_instru(AFC, 0, arg, NOTU);
+	add_instru(STORR, LR, 0, NOTU);
+	add_instru(AFC, 0, 1, NOTU);
+	add_instru(ADD, LR, LR, 0);
 }
 
-int depiler_retour(){
-	tab_retour.index--;
-	return tab_retour.tab[tab_retour.index];
+int depiler_contexte(char* id) {
+	
+	return 0;
 }
 
 void ajout_fonction(char* id, int index_definition) {
@@ -38,7 +39,7 @@ void incremente_nb_args() {
 	tab_fonctions.tab[tab_fonctions.index - 1].nb_args ++;
 }
 
-int get_index_definition(char* id) {
+int get_index(char* id) {
   int i = 0;
 	while(i < tab_fonctions.index && strcmp(id, tab_fonctions.tab[i].id) != 0) {
 		i++;
@@ -50,7 +51,7 @@ int get_index_definition(char* id) {
 }
 
 int get_nb_args(char* id) {
-	int i = get_index_definition(id);
+	int i = get_index(id);
 	return tab_fonctions.tab[i].nb_args;
 }
 
