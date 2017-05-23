@@ -31,7 +31,7 @@ void OperationArith (int typeOperation) {
   add_instru (typeOperation, 0, 0, 1);
   //stockage du résultat
   add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
-  tab_sym.tmp_var--;
+  decr_tmp_var();
 }
 
 void Or() {
@@ -46,7 +46,7 @@ void Or() {
   add_instru(EQU, 0, 0, 2);
   //stockage du résultat
   add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
-	tab_sym.tmp_var--;
+  decr_tmp_var();
 }
 
 void And() {
@@ -60,7 +60,7 @@ void And() {
   add_instru(MUL, 0, 0, 1);
   //stockage du résultat
   add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
-	tab_sym.tmp_var--;
+  decr_tmp_var();
 }
 
 //les operateurs valides sont : EQU, INF, INFE, SUP, SUPE
@@ -72,7 +72,7 @@ void ComparaisonLogique(int operateur) {
   add_instru(operateur, 0, 0, 1);
   //stockage du résultat
   add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
-	tab_sym.tmp_var--;      	
+  decr_tmp_var();
 }
 
 void Not() {
@@ -97,7 +97,7 @@ void Jump(int typeJump) { //typeJump attend JMP ou JMPC
 			add_instru(EQU, 0, 0, 1); //on inverse le booléen "condition" (R0)
 			empiler(tab_code.index); //on empile l'index de la ligne de code asm actuelle pour y retourner
 			add_instru(JMPC, -2, 0, NOTU);
-			tab_sym.tmp_var--;
+			decr_tmp_var();
 			break;
 		default:
 			printf("Erreur dans asm.c/Jump: argument typeJump incorrect\n");

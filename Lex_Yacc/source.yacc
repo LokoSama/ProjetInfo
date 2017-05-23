@@ -115,7 +115,7 @@ Invocation : tId tPo Params tPf									{
 																									else {
 																										int i;
 																										for (i = 0; i < $3; i++) {
-																											empiler_arg(tab_sym.tmp_var -1);
+																											empiler_arg(tab_sym.tmp_var -1);	//on passe en argument l'index de la variable à empiler
 																											tab_sym.tmp_var --;
 																										}
 																										empiler_contexte(tab_code.index + 7); //on empile l'adresse de retour

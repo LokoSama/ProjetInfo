@@ -4,6 +4,7 @@ OBJ=$(SRC:.c=.o)
 all: compilator
 clean:
 	rm -f *.o compilator test
+	rm -f y.tab.*
 y.pdf : y.dot
 	dot -Tpdf y.dot > y.pdf
 y.tab.c y.tab.h y.dot y.output : source.yacc

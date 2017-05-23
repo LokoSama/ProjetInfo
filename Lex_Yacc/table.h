@@ -25,8 +25,10 @@ int augmentation_profondeur (int depth_ac);
 void print_table (int max);
 int index_of(char* nom);
 
-void incr_tmpvar();
-void decr_tmpvar();
+void incr_tmp_var();
+void decr_tmp_var();
+void incr_index_sym();
+void decr_index_sym();
 
 #endif
 

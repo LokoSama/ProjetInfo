@@ -27,7 +27,7 @@
 #define BP 13
 #define SP 14
 
-#define NOTU -1  //NOT_USED
+#define NOTU -10  //NOT_USED
 
 struct tab_instrus {
 	int tab[2048][4];

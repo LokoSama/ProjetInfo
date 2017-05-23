@@ -4,12 +4,12 @@
 int Init_table () {
 	tab_sym.index = 0;
 	tab_sym.tmp_var = 0;
-  return 0;
+	return 0;
 }
 
 void Ajout_symbole (int init, char *val,int depth_ac) {
-	int i=0;
-	int found=0;
+	int i = 0;
+	int found = 0;
 	while(found == 0 && i < tab_sym.index) {
 		if (strcmp(tab_sym.tab[i].id, val) == 0 && tab_sym.tab[i].depth == depth_ac) {
 			found = 1;
@@ -29,24 +29,23 @@ void Ajout_symbole (int init, char *val,int depth_ac) {
 
 int Suppression_symboles (int depth_ac) {
 	while(tab_sym.tab[tab_sym.index-1].depth == depth_ac) {
-  	decr_index_sym();
-  	tab_sym.tmp_var = tab_sym.index;
-  }
-  printf ("Suppression_symboles \n");
-  return depth_ac-1;
+		decr_index_sym();
+		tab_sym.tmp_var = tab_sym.index;
+	}
+	printf ("Suppression_symboles \n");
+	return depth_ac-1;
 }
 
 void Affecte(char * nom) {
 	int i = index_of(nom);
 	tab_sym.tab[i].init = 1;
 	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
-	add_instru(STORR, i, 0, NOTU);
 	decr_tmp_var();
 }
 
 int augmentation_profondeur (int depth_ac) {
-  printf ("Augmentation_profondeur\n");
-  depth_ac++;
+	printf ("Augmentation_profondeur\n");
+	depth_ac++;
 	return depth_ac;
 }
 
@@ -86,8 +85,8 @@ void decr_tmp_var() {
 }
 
 void print_table (int max) {
-  int i = 0;
-  for (i = 0; i < max; i++) {
-  	printf ("Index : %d , Id : %s ,Init ? :  %d , Profondeur :%d \n",	i, tab_sym.tab[i].id, tab_sym.tab[i].init, tab_sym.tab[i].depth);
-  }
+	int i = 0;
+	for (i = 0; i < max; i++) {
+		printf ("Index : %d , Id : %s ,Init ? :  %d , Profondeur :%d \n",	i, tab_sym.tab[i].id, tab_sym.tab[i].init, tab_sym.tab[i].depth);
+	}
 }

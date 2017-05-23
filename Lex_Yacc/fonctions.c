@@ -12,7 +12,7 @@ void Init_fonctions() {
 
 void empiler_contexte(int adresseRetour) {
 	add_instru(AFC, 0, adresseRetour, NOTU);
-	add_instru(STORR, SP, 0, 0); //on empile SP					SP pointe sur la prochaine case libre (donc la valeur de retour), donc on met adresseRetour à SP+1
+	add_instru(STORR, SP, 0, 0); //on empile l'adresse de retour				SP pointe sur la prochaine case libre (donc la valeur de retour), donc on met adresseRetour à SP
 	add_instru(STORR, SP, 1, BP); //on empile BP
 	add_instru(AFC, 0, 2, NOTU); //SP <- SP + 2
 	add_instru(ADD, SP, SP, 0);
@@ -21,7 +21,7 @@ void empiler_contexte(int adresseRetour) {
 
 void empiler_arg(int arg) {
 	add_instru(LOADR, 0, BP, arg);
-	add_instru(STORR, SP, 0, 0); //TODO TMPVAR ?
+	add_instru(STORR, SP, 0, 0); //on empile l'arg à SP
 	add_instru(AFC, 0, 1, NOTU); //SP ++
 	add_instru(ADD, SP, SP, 0);
 }
@@ -52,7 +52,7 @@ void ajout_fonction(char* id, int index_definition) {
   	strcpy (tab_fonctions.tab[tab_fonctions.index].id, id);
   	tab_fonctions.tab[tab_fonctions.index].nb_args = 0;
   	tab_fonctions.tab[tab_fonctions.index].index_definition = index_definition;
-  	tab_fonctions.index ++;
+  	tab_fonctions.index++;
   }
 }
 
