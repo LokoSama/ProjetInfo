@@ -1,0 +1,7 @@
+v1
+Lex_Yacc/*.output
+Lex_Yacc/*.o
+Lex_Yacc/compilator
+Lex_Yacc/*.pdf
+Lex_Yacc/y.tab.*
+Lex_Yacc/y.dot
