@@ -1,7 +1,0 @@
-v1
-*.output
-*.o
-compilator
-*.pdf
-y.tab.*
-y.dot

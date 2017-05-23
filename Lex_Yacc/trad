@@ -1,73 +1,29 @@
-JMP 31				//ligne 32 du fichier
---
-SP++
---
-SP++
---
-@SP		<- @(BP-3)	//
---
-SP++
---
-@SP		<- @(BP-4)	//
---
-SP++
---
-@(BP+2)	<- @BP		//
---
-@(BP+3)	<- @(BP+1)	//
-R0		<- @(BP+3)	//
-R1		<- @(BP+2)	//
-R0		<- R1 + R2	//
-@(BP+2)	<- R0		//
---
-SP--
-R0		<- @(BP+2)	//
-R1		<- @(BP-2)	//
-BP		<- @(BP-1)	//old_BP
-JMPR R1				//JMP 
---
-SP--
-
-SP--
---					//DEBUT MAIN
-@BP 	<- 8
---
-SP++
---
-@(BP+1) <- 7
---
-SP++
---
-@(BP+2) <- @BP		//8 (stockage tmp)
---
-@(BP+3) <- @(BP+1)	//7 (stockage tmp)
---
-@SP		<- @(BP+3)	//7 (passage variable)
---
-SP++
---
-@SP		<- @(BP+2)	//8 (passage variable)
---
-SP++
---
-@SP		<- 58		//sauvegarde retour
-@(SP+1)	<- BP		//sauvegarde old_BP
---
-SP += 2
-BP		<- SP		//nouveau BP
-JMP 1				//JMP 2 du fichier, INVOC
-@(BP+2)	<- R0		//le retour, dans une tmp_var ?
---
-SP++
---					//toute la suite est sans doute le return du main
-@(BP+3)	<- 1		//"1", la valeur de retour du main
-R0
-R1
+BP = 0
+JMP 3
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
 
 
---
-SP--
---
-SP--
---
-SP--
+
+
+
+
+
+
+
+
+
+
+
+
