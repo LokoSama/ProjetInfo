@@ -30,7 +30,7 @@ void OperationArith (int typeOperation) {
    //on effectue l'opération arithmétique et on stocke le résultat dans tmp
   add_instru (typeOperation, 0, 0, 1);
   //stockage du résultat
-  add_instru (STORE, tab_sym.tmp_var - 2, 0, NOTU);
+  add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
   tab_sym.tmp_var--;
 }
 

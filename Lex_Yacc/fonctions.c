@@ -4,16 +4,38 @@ void Init_fonctions() {
 	tab_fonctions.index=0;
 }
 
-void empiler_contexte(int arg) {
-	add_instru(AFC, 0, arg, NOTU);
-	add_instru(STORR, LR, 0, NOTU);
-	add_instru(AFC, 0, 1, NOTU);
-	add_instru(ADD, LR, LR, 0);
+/*
+	STORR Rx offset Ry   =>   adr[Rx+offset] <- Ry
+	LOADR Rx Ry offset   =>   Rx <- adr[Ry+offset]
+	JMPR ?	
+*/
+
+void empiler_contexte(int adresseRetour) {
+	//valeur_retour
+	add_instru(AFC, 0, adresseRetour, NOTU);
+	add_instru(STORR, SP, 1, 0); //SP pointe sur la prochaine case libre (donc la valeur de retour), donc on met adresseRetour à SP+1
+	add_instru(STORR, SP, 2, BP); //on empile BP
+	add_instru(AFC, 0, 3, NOTU); //SP <- SP + 3
+	add_instru(ADD, SP, SP, 0);
+	add_instru(COP, BP, SP, NOTU);//BP <- SP
 }
 
-int depiler_contexte(char* id) {
-	
-	return 0;
+void empiler_arg(int arg) {
+	add_instru(AFC, 0, arg, NOTU);
+	add_instru(STORR, SP, 0, 0); //TODO TMPVAR ?
+	add_instru(AFC, 0, 1, NOTU); //SP ++
+	add_instru(ADD, SP, SP, 0);
+}
+
+void lire_args(char* idFonc) {
+	int nbreArgs = get_nb_args(idFonc);
+	int i;
+	for (i = 0; i < nbreArgs; i++) {
+		add_instru(LOADR, 0, BP, -(4+i)); // on récupère les args et on les stocke en haut de la pile
+		add_instru(STORR, SP, 0, 0);
+		add_instr(AFC, 0, 1, NOTU); //SP++
+		add_instru(ADD, SP, SP, 0);
+	}
 }
 
 void ajout_fonction(char* id, int index_definition) {

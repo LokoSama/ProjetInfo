@@ -18,7 +18,8 @@ struct table {
 } tab_sym;
 
 int Init_table ();
-void Affecte(char * nom);
+void Affecte(char * nom); //affecte la var nom à la valeur de tmp_var -1
+void affecte_adr(char* nom, int adr);
 void Ajout_symbole (int init, char *val,int depth_ac);
 int Suppression_symboles (int depth_ac);
 int augmentation_profondeur (int depth_ac);

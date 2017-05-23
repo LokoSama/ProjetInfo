@@ -10,7 +10,8 @@
 //TODO : pour gérer les fonctions, il est nécessaire d'utiliser une zone de la mémoire de manière à stocker les adresses de retour, sous la forme d'une pile. Al'invocation, on empile la ligne de l'instru acutelle, et au return, on dépile cette valeur et on jump au haut de la pile grâce au registre LR (R14 ou autre). La valeur de retour est mise dans R0. 
 
 
-// TODO : Affectation , Invocation, if, while ... 
+// TODO: le rapport ! Pensez à dire qu'on a 256 var ma par fonction (car STORR au lieu de STORE)
+
 int yylex(void);
 void yyerror (char const *s) {
    fprintf (stderr, "%s\n", s);
@@ -59,11 +60,6 @@ int depth_act;
 
 %type <xInt> Params Param ParamsNext
 
-/* TODO : déclaration de fonctions
-					invocation de fonctions
-					pointeurs ?
-					
-*/
 
 %%
 Start : Fonction Start {printf("Start\n");}
@@ -71,7 +67,7 @@ Start : Fonction Start {printf("Start\n");}
 ;
 
 Fonction : tInt tMain {set_mainJump(); ajout_fonction($2, tab_code.index);} tPo Args tPf BodyReturn
-| tInt tId {ajout_fonction($2, tab_code.index);} tPo Args tPf BodyReturn
+| tInt tId {ajout_fonction($2, tab_code.index);} tPo Args tPf {lire_args($2);} BodyReturn
 ;
 
 Args : Arg ListeArgs {incremente_nb_args();}
@@ -82,10 +78,10 @@ ListeArgs : tVir Arg ListeArgs {incremente_nb_args();}
 		  | //peut être vide
 ;
 
-Arg : tInt tId
+Arg : tInt tId {Ajout_symbole(1, $2, depth_act);}
 ;
 
-BodyReturn : tAo Instrus Return tAf
+BodyReturn : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus Return tAf {depth_act = Suppression_symboles(depth_act);}
 ;
 
 Return : tReturn ExpArithm tPvir {add_instru(JMP, depiler_contexte(), NOTU, NOTU);}
@@ -104,13 +100,19 @@ Instru : Declaration
     | Invocation tPvir													{tab_sym.tmp_var--;}
 ;
 Invocation : tId tPo Params tPf									{
-																				if($3 != get_nb_args($1)){
-																					printf("Argument invalid\n");
-																				}
-																				else {
-																					empiler_contexte(tab_code.index);
-																					add_instru(JMP, tab_fonctions.tab[get_index($1)].index_definition, NOTU, NOTU);}
-																				}
+																									if($3 != get_nb_args($1)){
+																										printf("Argument invalid\n");
+																									}
+																									else {
+																										int i = 0;
+																										for (i = 0; i < $3; i++) {
+																											empiler_arg(tab_sym.tmp_var -1);
+																											tab_sym.tmp_var --;
+																										}
+																										empiler_contexte(tab_code.index + 1); //on empile l'adresse de retour
+																										add_instru(JMP, tab_fonctions.tab[get_index($1)].index_definition, NOTU, NOTU);
+																									}
+																								}
 ;
 Param : ExpArithm {$$=1;}
 ;
@@ -150,10 +152,10 @@ ExpArithm : ExpArithm tPlus ExpArithm {OperationArith(ADD);}
     | tNot ExpArithm									{Not();}
     | tPo ExpArithm tPf								//rien à faire
     | tNb															{add_instru(AFC, 0, $1, NOTU);
-    																	 add_instru(STORE, tab_sym.tmp_var, 0, NOTU);
+    																	 add_instru(STORR, BP, tab_sym.tmp_var, 0);
     																	 tab_sym.tmp_var++;}
     | tId 														{add_instru(LOAD, 0, index_of($1), NOTU);
-    																	 add_instru(STORE, tab_sym.tmp_var, 0, NOTU);
+    																	 add_instru(STORR, BP, tab_sym.tmp_var, 0);
     																	 tab_sym.tmp_var++;}
     | Invocation
 ;

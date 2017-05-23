@@ -40,8 +40,13 @@ void Affecte(char * nom) {
 	int i = index_of(nom);
 	tab_sym.tab[i].init = 1;
 	add_instru(LOAD, 0, tab_sym.tmp_var - 1, NOTU);
-	add_instru(STORE, i, 0, NOTU);
+	add_instru(STORR, i, 0, NOTU);
 	tab_sym.tmp_var--;
+}
+
+void affecte_adr(char* nom, int adr) {
+	int i = index_of(nom);
+	tab_sym.tab[i].
 }
 
 int augmentation_profondeur (int depth_ac) {

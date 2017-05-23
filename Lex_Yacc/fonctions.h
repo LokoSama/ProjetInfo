@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include "asm.h"
 
-#define LR 14
-#define BASEPILE 3000;
+#define BP 13
+#define SP 14
 
 struct struct_fonction {
 	char id[16];
@@ -20,8 +20,9 @@ struct tableau_f {
 } tab_fonctions;
 
 void Init_fonctions();
-void empiler_contexte(int arg);
-int depiler_contexte();
+void empiler_arg(int arg);
+void empiler_contexte(int adresseRetour);
+void lire_args(char* idFonc);
 
 void ajout_fonction(char* id, int index_definition);
 void incremente_nb_args();
