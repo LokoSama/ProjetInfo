@@ -62,26 +62,18 @@ int index_of(char* nom) {
 
 void incr_index_sym() {
 	tab_sym.index++;
-	add_instru(AFC, 0, 1, NOTU);//SP++
-	add_instru(ADD, SP, SP, 0);
 }
 
 void decr_index_sym() {
 	tab_sym.index--;
-	add_instru(AFC, 0, 1, NOTU);//SP--
-	add_instru(SOU, SP, SP, 0);	
 }
 
 void incr_tmp_var() {
 	tab_sym.tmp_var++;
-	add_instru(AFC, 0, 1, NOTU);//SP++
-	add_instru(ADD, SP, SP, 0);
 }
 
 void decr_tmp_var() {
 	tab_sym.tmp_var--;
-	add_instru(AFC, 0, 1, NOTU);//SP--
-	add_instru(SOU, SP, SP, 0);	
 }
 
 void print_table (int max) {

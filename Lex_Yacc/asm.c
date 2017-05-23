@@ -2,8 +2,9 @@
 
 void Init_asm () {
 	// Tableau contenant le code ASM
-	//La premiere ligne du tab_code sera toujours un JMP au main
-  tab_code.index = 1;
+	//La premiere ligne du tab_code sera toujours une initialisation de BP
+	//La seconde ligne du tab_code sera toujours un JMP au main
+  tab_code.index = 2;
 }
 
 //ajout d'une instruction a b c d à la fin du code
@@ -16,17 +17,21 @@ void add_instru (int a, int b, int c, int d) {
 }
 
 void set_mainJump() {
-	tab_code.tab[0][0] = JMP;
-  tab_code.tab[0][1] = tab_code.index;
-  tab_code.tab[0][2] = NOTU;
+  tab_code.tab[0][0] = AFC;
+  tab_code.tab[0][1] = BP;
+  tab_code.tab[0][2] = 0;
   tab_code.tab[0][3] = NOTU;
+	tab_code.tab[1][0] = JMP;
+  tab_code.tab[1][1] = tab_code.index;
+  tab_code.tab[1][2] = NOTU;
+  tab_code.tab[1][3] = NOTU;
 }
 
 //typeOperation = ADD, MUL, SOU, DIV
 void OperationArith (int typeOperation) {
 	//on récupère les valeurs dans la mémoire tmp
-	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
-	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 1);
    //on effectue l'opération arithmétique et on stocke le résultat dans tmp
   add_instru (typeOperation, 0, 0, 1);
   //stockage du résultat
@@ -36,14 +41,14 @@ void OperationArith (int typeOperation) {
 
 void Or() {
 	//on récupère les valeurs dans la mémoire tmp
-	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
-	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 1);
   //on effectue l'opération logique
-  add_instru(AFC, 2, 0, NOTU);
-  add_instru(EQU, 0, 0, 2);
-  add_instru(EQU, 1, 1, 2);
-  add_instru(MUL, 0, 0, 1);
-  add_instru(EQU, 0, 0, 2);
+	add_instru(AFC, 2, 0, NOTU);
+	add_instru(EQU, 0, 0, 2);
+	add_instru(EQU, 1, 1, 2);
+	add_instru(MUL, 0, 0, 1);
+	add_instru(EQU, 0, 0, 2);
   //stockage du résultat
   add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
   decr_tmp_var();
@@ -51,8 +56,8 @@ void Or() {
 
 void And() {
 	//on récupère les valeurs dans la mémoire tmp
-	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
-	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 1);
   //on effectue l'opération logique
   add_instru(AFC, 2, 0, NOTU);
   add_instru(EQU, 1, 1, 2); //R1 = ((R1 == 0) == 0);
@@ -66,8 +71,8 @@ void And() {
 //les operateurs valides sont : EQU, INF, INFE, SUP, SUPE
 void ComparaisonLogique(int operateur) {
 	//on récupère les valeurs dans la mémoire tmp
-	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
-	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 2);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 1);
   //on effectue l'opération logique
   add_instru(operateur, 0, 0, 1);
   //stockage du résultat

@@ -23,9 +23,8 @@
 #define STORR 17
 #define JMPR 18
 
-//definitions pour les registres BasePile et StackPointer
+//definition pour le registre BasePile
 #define BP 13
-#define SP 14
 
 #define NOTU -10  //NOT_USED
 

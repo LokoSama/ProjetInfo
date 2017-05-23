@@ -21,7 +21,7 @@ void empiler_arg(int arg);
 void empiler_contexte(int adresseRetour);
 void lire_args(char* idFonc);
 
-void ajout_fonction(char* id, int index_definition);
+void ajout_fonction(const char* id, int index_definition);
 void incremente_nb_args();
 int get_index(char* id);
 int get_nb_args(char* id);

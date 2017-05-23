@@ -8,6 +8,7 @@ main return  tMain ;
 int return  tInt ;
 float return  tFloat ;
 if return  tIf ;
+else return tElse ;
 while return  tWhile ;
 const return  tConst ;
 \{ return  tAo ;
@@ -31,7 +32,7 @@ and|\&\& return  tAnd ;
 or|\|\| return  tOr ;
 #include return  tInclude ;
 [0-9]+ {yylval.xInt = atoi(yytext);return tNb;} ;
-[a-zA-Z][a-zA-Z0-9]* {yylval.str = strdup(yytext);return tId;} ;
+[a-zA-Z][a-zA-Z0-9]* {yylval.str = strdup(yytext); return tId;} ;
 [ \t] ; /* ignore les blancs et tabulations */
 %%
 

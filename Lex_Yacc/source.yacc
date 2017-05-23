@@ -16,6 +16,8 @@
 
 // TODO: le rapport ! Pensez à dire qu'on a 256 var ma par fonction (car STORR au lieu de STORE)
 
+//TODO: while cassé
+
 int yylex(void);
 void yyerror (char const *s) {
    fprintf (stderr, "%s\n", s);
@@ -52,7 +54,7 @@ int depth_act;
 %token tEqLog
 %token tInclude
 %token tConst
-%token <str> tMain
+%token tMain
 %token <xFloat> tFloat
 
 %right tEq
@@ -67,11 +69,11 @@ int depth_act;
 
 %%
 Start : Fonction Start {printf("Start\n");}
-|//peut être vide
+			| //peut être vide
 ;
 
-Fonction : tInt tMain {set_mainJump(); ajout_fonction($2, tab_code.index);} tPo Args tPf BodyReturn
-| tInt tId {ajout_fonction($2, tab_code.index);} tPo Args tPf {lire_args($2);} BodyReturn
+Fonction : tInt tMain {set_mainJump();} tPo Args tPf BodyReturnMain
+			| tInt tId {ajout_fonction($2, tab_code.index);} tPo Args tPf {lire_args($2);} BodyReturn
 ;
 
 Args : Arg ListeArgs {incremente_nb_args();}
@@ -85,14 +87,25 @@ ListeArgs : tVir Arg ListeArgs {incremente_nb_args();}
 Arg : tInt tId {Ajout_symbole(1, $2, depth_act+1);}
 ;
 
-BodyReturn : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus Return tAf {depth_act = Suppression_symboles(depth_act);}
+BodyReturnMain : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus ReturnMain tAf {depth_act = Suppression_symboles(depth_act);}
+;
+
+ReturnMain : tReturn ExpArithm tPvir {
+																				add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);		//R0 <- valeur de retour
+																				print_code();
+																				print_table(5);
+																				exit(0);
+																		 }
+;
+
+BodyReturn : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus Return tAf {print_table(3);depth_act = Suppression_symboles(depth_act);}
 ;
 
 Return : tReturn ExpArithm tPvir {
-																		add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);	//R0 <- valeur de retour
-																		add_instru(LOADR, 1, BP, -2);										//R1 <- adresse de retour
-																		add_instru(LOADR, BP, BP, -1);									//récupération old_BP
-																		add_instru(JMPR, 1, NOTU, NOTU);			
+																		add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);		//R0 <- valeur de retour
+																		add_instru(LOADR, 1, BP, -2);											//R1 <- adresse de retour
+																		add_instru(LOADR, BP, BP, -1);										//récupération old_BP
+																		add_instru(JMPR, 1, NOTU, NOTU);
 																 }
 ;
 
@@ -113,12 +126,8 @@ Invocation : tId tPo Params tPf									{
 																										printf("Argument invalid\n");
 																									}
 																									else {
-																										int i;
-																										for (i = 0; i < $3; i++) {
-																											empiler_arg(tab_sym.tmp_var -1);	//on passe en argument l'index de la variable à empiler
-																											tab_sym.tmp_var --;
-																										}
-																										empiler_contexte(tab_code.index + 7); //on empile l'adresse de retour
+																										empiler_contexte(tab_code.index + 5); //on empile l'adresse de retour
+																										tab_sym.tmp_var -= $3;								//on baisse le pointeur tmp_var: les variables qui étaient tmp font maintenant partie du contexte
 																										add_instru(JMP, tab_fonctions.tab[get_index($1)].index_definition, NOTU, NOTU);
 																									}
 																								}
@@ -140,7 +149,7 @@ BoucleIf : If Else
 If :  tIf tPo ExpArithm tPf {Jump(JMPC);} Body {tab_code.tab[depiler()][1] = tab_code.index +1; Jump(JMP);}
 ;
 
-Else : {tab_code.tab[depiler()][1] = tab_code.index;}
+Else : /*rien*/ {tab_code.tab[depiler()][1] = tab_code.index;}
 		| tElse Body {tab_code.tab[depiler()][1] = tab_code.index;}
 ;
 
@@ -192,7 +201,5 @@ int main(void) {
 	  Init_tab_boucle();
 	  Init_fonctions();
 	  yyparse();
-	  print_code();
-	  print_table(5);
 }
 

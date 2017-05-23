@@ -12,41 +12,33 @@ void Init_fonctions() {
 
 void empiler_contexte(int adresseRetour) {
 	add_instru(AFC, 0, adresseRetour, NOTU);
-	add_instru(STORR, SP, 0, 0); //on empile l'adresse de retour				SP pointe sur la prochaine case libre (donc la valeur de retour), donc on met adresseRetour à SP
-	add_instru(STORR, SP, 1, BP); //on empile BP
-	add_instru(AFC, 0, 2, NOTU); //SP <- SP + 2
-	add_instru(ADD, SP, SP, 0);
-	add_instru(COP, BP, SP, NOTU);//BP <- SP
-}
-
-void empiler_arg(int arg) {
-	add_instru(LOADR, 0, BP, arg);
-	add_instru(STORR, SP, 0, 0); //on empile l'arg à SP
-	add_instru(AFC, 0, 1, NOTU); //SP ++
-	add_instru(ADD, SP, SP, 0);
+	add_instru(STORR, BP, tab_sym.tmp_var, 0); 						//on empile l'adresse de retour
+	add_instru(STORR, BP, tab_sym.tmp_var + 1, BP); 			//on empile BP
+	add_instru(AFC, BP, tab_sym.tmp_var + 2, NOTU);				//BP <- sommet de pile
 }
 
 void lire_args(char* idFonc) {
 	int nbreArgs = get_nb_args(idFonc);
 	int i;
 	for (i = 0; i < nbreArgs; i++) {
-		add_instru(LOADR, 0, BP, -(3+i)); // on récupère les args et on les stocke en haut de la pile
-		add_instru(STORR, SP, 0, 0);
-		add_instru(AFC, 0, 1, NOTU); //SP++
-		add_instru(ADD, SP, SP, 0);
+		add_instru(LOADR, 0, BP, -2-nbreArgs+i); // on récupère les args et on les stocke en haut de la pile
+		add_instru(STORR, BP, i, 0);
 	}
 }
 
-void ajout_fonction(char* id, int index_definition) {
+void ajout_fonction(const char* id, int index_definition) {
   int i = 0;
 	int found = 0;
-	
+	printf("***\n");
 	while(found == 0 && i < tab_fonctions.index) {
+		printf("Entree while: i=%d, index=%d\n", i, tab_fonctions.index);
+		printf("strcmp: %d\n", strcmp(tab_fonctions.tab[i].id, id));
   	if (strcmp(tab_fonctions.tab[i].id, id) == 0) {
   	  found = 1;
   	  printf("Impossible d'ajouter la fonction : déjà déclarée\n");
   	}
-  	  i++;
+  	printf("apres if\n");
+		i++;
   }
   if (found == 0) {
   	strcpy (tab_fonctions.tab[tab_fonctions.index].id, id);
