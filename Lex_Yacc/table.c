@@ -22,14 +22,14 @@ void Ajout_symbole (int init, char *val,int depth_ac) {
     strcpy (tab_sym.tab[tab_sym.index].id, val);
     tab_sym.tab[tab_sym.index].init = init;
     tab_sym.tab[tab_sym.index].depth = depth_ac;
-    tab_sym.index++;
+    incr_index_sym();
     tab_sym.tmp_var = tab_sym.index;
   }
 }
 
 int Suppression_symboles (int depth_ac) {
 	while(tab_sym.tab[tab_sym.index-1].depth == depth_ac) {
-  	tab_sym.index --;
+  	decr_index_sym();
   	tab_sym.tmp_var = tab_sym.index;
   }
   printf ("Suppression_symboles \n");
@@ -39,14 +39,9 @@ int Suppression_symboles (int depth_ac) {
 void Affecte(char * nom) {
 	int i = index_of(nom);
 	tab_sym.tab[i].init = 1;
-	add_instru(LOAD, 0, tab_sym.tmp_var - 1, NOTU);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
 	add_instru(STORR, i, 0, NOTU);
-	tab_sym.tmp_var--;
-}
-
-void affecte_adr(char* nom, int adr) {
-	int i = index_of(nom);
-	tab_sym.tab[i].
+	decr_tmp_var();
 }
 
 int augmentation_profondeur (int depth_ac) {
@@ -64,6 +59,30 @@ int index_of(char* nom) {
 	if (i == tab_sym.index)
 		printf("ERROR: Appel de variable inexistante\n");
 	return i;
+}
+
+void incr_index_sym() {
+	tab_sym.index++;
+	add_instru(AFC, 0, 1, NOTU);//SP++
+	add_instru(ADD, SP, SP, 0);
+}
+
+void decr_index_sym() {
+	tab_sym.index--;
+	add_instru(AFC, 0, 1, NOTU);//SP--
+	add_instru(SOU, SP, SP, 0);	
+}
+
+void incr_tmp_var() {
+	tab_sym.tmp_var++;
+	add_instru(AFC, 0, 1, NOTU);//SP++
+	add_instru(ADD, SP, SP, 0);
+}
+
+void decr_tmp_var() {
+	tab_sym.tmp_var--;
+	add_instru(AFC, 0, 1, NOTU);//SP--
+	add_instru(SOU, SP, SP, 0);	
 }
 
 void print_table (int max) {

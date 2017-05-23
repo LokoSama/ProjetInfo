@@ -1,16 +1,12 @@
-int add(int a, int b) {							
-	int a=3;
-	int b=4;
-	return a + b;
+int add(int mavar1, int mavar2) {
+	return mavar1 + mavar2;
 }
 
 int main () {
-int a = 8;
-if (c==0) {
-int d = 7;
-}
-int e=8;
-return 0;
+	int a = 8;
+	int c = 7;
+	int resultat = add(a,c);
+	return 1;
 }
 
 

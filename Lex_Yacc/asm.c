@@ -25,8 +25,8 @@ void set_mainJump() {
 //typeOperation = ADD, MUL, SOU, DIV
 void OperationArith (int typeOperation) {
 	//on récupère les valeurs dans la mémoire tmp
-  add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);
-  add_instru (LOAD, 1, tab_sym.tmp_var - 2, NOTU);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
    //on effectue l'opération arithmétique et on stocke le résultat dans tmp
   add_instru (typeOperation, 0, 0, 1);
   //stockage du résultat
@@ -36,8 +36,8 @@ void OperationArith (int typeOperation) {
 
 void Or() {
 	//on récupère les valeurs dans la mémoire tmp
-  add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);
-  add_instru (LOAD, 1, tab_sym.tmp_var - 2, NOTU);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
   //on effectue l'opération logique
   add_instru(AFC, 2, 0, NOTU);
   add_instru(EQU, 0, 0, 2);
@@ -45,43 +45,43 @@ void Or() {
   add_instru(MUL, 0, 0, 1);
   add_instru(EQU, 0, 0, 2);
   //stockage du résultat
-	add_instru(STORE, tab_sym.tmp_var -2, 0, NOTU);
+  add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
 	tab_sym.tmp_var--;
 }
 
 void And() {
 	//on récupère les valeurs dans la mémoire tmp
-  add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);
-  add_instru (LOAD, 1, tab_sym.tmp_var - 2, NOTU);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
   //on effectue l'opération logique
   add_instru(AFC, 2, 0, NOTU);
   add_instru(EQU, 1, 1, 2); //R1 = ((R1 == 0) == 0);
   add_instru(EQU, 1, 1, 2);
   add_instru(MUL, 0, 0, 1);
   //stockage du résultat
-	add_instru(STORE, tab_sym.tmp_var -2, 0, NOTU);
+  add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
 	tab_sym.tmp_var--;
 }
 
 //les operateurs valides sont : EQU, INF, INFE, SUP, SUPE
 void ComparaisonLogique(int operateur) {
 	//on récupère les valeurs dans la mémoire tmp
-  add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);
-  add_instru (LOAD, 1, tab_sym.tmp_var - 2, NOTU);
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
+	add_instru(LOADR, 1, BP, tab_sym.tmp_var - 2);
   //on effectue l'opération logique
   add_instru(operateur, 0, 0, 1);
   //stockage du résultat
-	add_instru(STORE, tab_sym.tmp_var -2, 0, NOTU);
+  add_instru(STORR, BP, tab_sym.tmp_var - 2, 0);
 	tab_sym.tmp_var--;      	
 }
 
 void Not() {
 	//on récupère la valeur dans la mémoire tmp
-	add_instru (LOAD, 0, tab_sym.tmp_var - 1, NOTU);;
+	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
 	//on effectue l'opération logique
 	add_instru(AFC,1,0,NOTU);
 	add_instru(EQU,0,0,1);
-	add_instru(STORE, tab_sym.tmp_var -1, 0, NOTU);
+  add_instru(STORR, BP, tab_sym.tmp_var - 1, 0);
 }
 
 void Jump(int typeJump) { //typeJump attend JMP ou JMPC
@@ -93,7 +93,7 @@ void Jump(int typeJump) { //typeJump attend JMP ou JMPC
 		case JMPC:
 			//on récupère la condition dans la mémoire tmp
 			add_instru(AFC, 1, 0, NOTU);
-			add_instru(LOAD, 0, tab_sym.tmp_var - 1, NOTU);
+			add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
 			add_instru(EQU, 0, 0, 1); //on inverse le booléen "condition" (R0)
 			empiler(tab_code.index); //on empile l'index de la ligne de code asm actuelle pour y retourner
 			add_instru(JMPC, -2, 0, NOTU);

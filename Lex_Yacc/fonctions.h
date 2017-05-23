@@ -5,9 +5,6 @@
 #include <stdio.h>
 #include "asm.h"
 
-#define BP 13
-#define SP 14
-
 struct struct_fonction {
 	char id[16];
 	int nb_args;

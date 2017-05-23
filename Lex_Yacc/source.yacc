@@ -7,8 +7,12 @@
 #include "boucle.h"
 #include "fonctions.h"
 
-//TODO : pour gérer les fonctions, il est nécessaire d'utiliser une zone de la mémoire de manière à stocker les adresses de retour, sous la forme d'une pile. Al'invocation, on empile la ligne de l'instru acutelle, et au return, on dépile cette valeur et on jump au haut de la pile grâce au registre LR (R14 ou autre). La valeur de retour est mise dans R0. 
+//bmorgan@laas.fr ? voir poly
 
+//Remplacer tab_sym.tmp_var ++ par incr_tmp_var
+//Remplacer tab_sym.index ++ par incr_index_sym
+
+//TODO : pour gérer les fonctions, il est nécessaire d'utiliser une zone de la mémoire de manière à stocker les adresses de retour, sous la forme d'une pile. Al'invocation, on empile la ligne de l'instru acutelle, et au return, on dépile cette valeur et on jump au haut de la pile grâce au registre LR (R14 ou autre). La valeur de retour est mise dans R0. 
 
 // TODO: le rapport ! Pensez à dire qu'on a 256 var ma par fonction (car STORR au lieu de STORE)
 
@@ -78,13 +82,18 @@ ListeArgs : tVir Arg ListeArgs {incremente_nb_args();}
 		  | //peut être vide
 ;
 
-Arg : tInt tId {Ajout_symbole(1, $2, depth_act);}
+Arg : tInt tId {Ajout_symbole(1, $2, depth_act+1);}
 ;
 
 BodyReturn : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus Return tAf {depth_act = Suppression_symboles(depth_act);}
 ;
 
-Return : tReturn ExpArithm tPvir {add_instru(JMP, depiler_contexte(), NOTU, NOTU);}
+Return : tReturn ExpArithm tPvir {
+																		add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);	//R0 <- valeur de retour
+																		add_instru(LOADR, 1, BP, -2);										//R1 <- adresse de retour
+																		add_instru(LOADR, BP, BP, -1);									//récupération old_BP
+																		add_instru(JMPR, 1, NOTU, NOTU);			
+																 }
 ;
 
 Body : tAo {depth_act = augmentation_profondeur(depth_act);} Instrus tAf {depth_act = Suppression_symboles(depth_act);}
@@ -97,19 +106,19 @@ Instru : Declaration
     | BoucleIf
     | While
     | Affectation
-    | Invocation tPvir													{tab_sym.tmp_var--;}
+    | Invocation tPvir													{}
 ;
 Invocation : tId tPo Params tPf									{
 																									if($3 != get_nb_args($1)){
 																										printf("Argument invalid\n");
 																									}
 																									else {
-																										int i = 0;
+																										int i;
 																										for (i = 0; i < $3; i++) {
 																											empiler_arg(tab_sym.tmp_var -1);
 																											tab_sym.tmp_var --;
 																										}
-																										empiler_contexte(tab_code.index + 1); //on empile l'adresse de retour
+																										empiler_contexte(tab_code.index + 7); //on empile l'adresse de retour
 																										add_instru(JMP, tab_fonctions.tab[get_index($1)].index_definition, NOTU, NOTU);
 																									}
 																								}
@@ -154,10 +163,11 @@ ExpArithm : ExpArithm tPlus ExpArithm {OperationArith(ADD);}
     | tNb															{add_instru(AFC, 0, $1, NOTU);
     																	 add_instru(STORR, BP, tab_sym.tmp_var, 0);
     																	 tab_sym.tmp_var++;}
-    | tId 														{add_instru(LOAD, 0, index_of($1), NOTU);
+    | tId 														{add_instru(LOADR, 0, BP, index_of($1));
     																	 add_instru(STORR, BP, tab_sym.tmp_var, 0);
     																	 tab_sym.tmp_var++;}
-    | Invocation
+    | Invocation											{add_instru(STORR, BP, tab_sym.tmp_var, 0);
+    																	 tab_sym.tmp_var++;}
 ;
 
 Affectation : tId tEq ExpArithm tPvir {Affecte($1);}

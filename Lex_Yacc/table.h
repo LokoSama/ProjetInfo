@@ -19,12 +19,14 @@ struct table {
 
 int Init_table ();
 void Affecte(char * nom); //affecte la var nom à la valeur de tmp_var -1
-void affecte_adr(char* nom, int adr);
 void Ajout_symbole (int init, char *val,int depth_ac);
 int Suppression_symboles (int depth_ac);
 int augmentation_profondeur (int depth_ac);
 void print_table (int max);
 int index_of(char* nom);
+
+void incr_tmpvar();
+void decr_tmpvar();
 
 #endif
 

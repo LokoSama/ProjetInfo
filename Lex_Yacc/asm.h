@@ -23,6 +23,10 @@
 #define STORR 17
 #define JMPR 18
 
+//definitions pour les registres BasePile et StackPointer
+#define BP 13
+#define SP 14
+
 #define NOTU -1  //NOT_USED
 
 struct tab_instrus {
