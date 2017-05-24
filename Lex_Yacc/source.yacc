@@ -153,7 +153,7 @@ Else : /*rien*/ {tab_code.tab[depiler()][1] = tab_code.index;}
 		| tElse Body {tab_code.tab[depiler()][1] = tab_code.index;}
 ;
 
-While : tWhile tPo ExpArithm tPf {empiler(tab_code.index); Jump(JMPC);} Body {tab_code.tab[depiler()][1] = tab_code.index +1; add_instru(JMP, depiler(), NOTU, NOTU);}
+While : tWhile {empiler(tab_code.index);} /*repositionnement de l index du jump */ tPo ExpArithm tPf {Jump(JMPC);} Body {tab_code.tab[depiler()][1] = tab_code.index +1; add_instru(JMP, depiler(), NOTU, NOTU);}
 ;
 
 ExpArithm : ExpArithm tPlus ExpArithm {OperationArith(ADD);}

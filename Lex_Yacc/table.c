@@ -40,6 +40,7 @@ void Affecte(char * nom) {
 	int i = index_of(nom);
 	tab_sym.tab[i].init = 1;
 	add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
+	add_instru(STORR, BP, i, 0);
 	decr_tmp_var();
 }
 

@@ -97,9 +97,7 @@ void Jump(int typeJump) { //typeJump attend JMP ou JMPC
 			break;
 		case JMPC:
 			//on récupère la condition dans la mémoire tmp
-			add_instru(AFC, 1, 0, NOTU);
 			add_instru(LOADR, 0, BP, tab_sym.tmp_var - 1);
-			add_instru(EQU, 0, 0, 1); //on inverse le booléen "condition" (R0)
 			empiler(tab_code.index); //on empile l'index de la ligne de code asm actuelle pour y retourner
 			add_instru(JMPC, -2, 0, NOTU);
 			decr_tmp_var();
