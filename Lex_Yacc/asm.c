@@ -109,7 +109,7 @@ void Jump(int typeJump) { //typeJump attend JMP ou JMPC
 }
 
 int to_signed (int a) {
-if (a <0) return (-a) | 0x80 ;
+if (a <0) return ((~(-a)) +1 )& 0xff;
 else return a;
 }
 
