@@ -120,9 +120,9 @@ void print_code () {
   int i;
   for (i = 0; i < tab_code.index; i++) {
   	if (tab_code.tab[i][2] == NOTU)
-  		fprintf (asmcode, "%.2X%.2X8181\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]));
+  		fprintf (asmcode, "%.2X%.2XFFFF\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]));
     else if (tab_code.tab[i][3] == NOTU)
-			fprintf (asmcode, "%.2X%.2X%.2X81\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]), to_signed(tab_code.tab[i][2]));
+			fprintf (asmcode, "%.2X%.2X%.2XFF\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]), to_signed(tab_code.tab[i][2]));
     else
 			fprintf (asmcode, "%.2X%.2X%.2X%.2X\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]), to_signed(tab_code.tab[i][2]), to_signed(tab_code.tab[i][3]));
       //printf ("SORTIE print_code\n");
