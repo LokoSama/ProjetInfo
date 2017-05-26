@@ -7,16 +7,6 @@
 #include "boucle.h"
 #include "fonctions.h"
 
-//bmorgan@laas.fr ? voir poly
-
-//Remplacer tab_sym.tmp_var ++ par incr_tmp_var
-//Remplacer tab_sym.index ++ par incr_index_sym
-
-//TODO : pour gérer les fonctions, il est nécessaire d'utiliser une zone de la mémoire de manière à stocker les adresses de retour, sous la forme d'une pile. Al'invocation, on empile la ligne de l'instru acutelle, et au return, on dépile cette valeur et on jump au haut de la pile grâce au registre LR (R14 ou autre). La valeur de retour est mise dans R0. 
-
-// TODO: le rapport ! Pensez à dire qu'on a 256 var ma par fonction (car STORR au lieu de STORE)
-
-//TODO: while cassé
 
 int yylex(void);
 void yyerror (char const *s) {

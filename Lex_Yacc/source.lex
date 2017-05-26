@@ -31,7 +31,7 @@ not | \! return tNot ;
 and|\&\& return  tAnd ;
 or|\|\| return  tOr ;
 #include return  tInclude ;
-[0-9]+ {yylval.xInt = atoi(yytext);return tNb;} ;
+[-]?[0-9]+ {yylval.xInt = atoi(yytext);return tNb;} ;
 [a-zA-Z][a-zA-Z0-9]* {yylval.str = strdup(yytext); return tId;} ;
 [ \t] ; /* ignore les blancs et tabulations */
 %%
