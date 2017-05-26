@@ -67,7 +67,7 @@ ARCHITECTURE behavior OF processeur IS
 	END COMPONENT;
 	 
 	--CLOCK
-	signal CLK : std_logic;
+	signal CLK : std_logic := '0';
    constant CLK_period : time := 100 ns;
 	
 	--AUX
@@ -77,16 +77,19 @@ ARCHITECTURE behavior OF processeur IS
 	signal ins_di : std_logic_vector(31 downto 0) := (others => '0');
 	signal ins_a : std_logic_vector(15 downto 0);
 	
-	signal alea : std_logic_vector(3 downto 0) := (others => '0');
-	signal alea_CLK : std_logic;
+	--détection d'aléas
+	signal alea : std_logic := '0';
+	signal lidi_read_Ain : std_logic := '0';
+	signal lidi_read_Bin : std_logic := '0';
+	signal lidi_read_Cin : std_logic := '0';
+	signal diex_write_A : std_logic := '0';
+	signal exmem_write_A : std_logic := '0';
 	
 	signal data_a : std_logic_vector(15 downto 0);		--adr to read/write in memory
 	signal data_di : std_logic_vector(15 downto 0);		--value at address data_a in memory
 	signal data_we : std_logic;								--write order (true if 1)
 	signal data_do : std_logic_vector (15 downto 0);
-	
-	signal devnull : std_logic_vector(15 downto 0);
-	
+		
    signal lidi_COPin : std_logic_vector(7 downto 0);
 	signal lidi_Ain : std_logic_vector(15 downto 0);
 	signal lidi_Bin : std_logic_vector(15 downto 0);
@@ -129,23 +132,32 @@ ARCHITECTURE behavior OF processeur IS
 	
 BEGIN
 
-	--TODO:  mapper les devnull sur "open" et/ou x"0000"
-	--			faire les jumps
-	--			faire les fonctions du compilo
-	
-	--NOTE:	on a implémenté un compteur d'instructions et grâce au BRAM32 du prof
-	--			on peut lire et exécuter le code dans notrecode.hex
+	--TODO: GESTION JMP, JMPC, JMPR
 
-
-	--Gestion des aleas : clocks pouvant etre inhibees par le signal alea
-	alea_CLK <= '0' when (alea > x"0") else
-					CLK ;
-	alea <= "0001" when lidi_COPin= x"06" else
-				--"0011" when else
-				--"0111" when else
-				--"1111" when else
-				"0000";
-	
+	--Détection des aléas
+	----Ces 5 signaux auxiliaires identifient si on va lire un registre alors qu'une commande d'écriture de registre est dans un des deux étages suivants
+	lidi_read_Ain <= 	'1' when lidi_COPin = x"11" else '0';
+	lidi_read_Bin <= 	'1' when lidi_COPin >= x"01" and lidi_COPin <= x"05" else
+							'1' when lidi_COPin >= x"08" and lidi_COPin <= x"0D" else
+							'1' when lidi_COPin = x"0F" or lidi_COPin = x"10" else
+							'0';
+	lidi_read_Cin <= 	'1' when lidi_COPin >= x"01" and lidi_COPin <= x"04" else
+							'1' when lidi_COPin >= x"09" and lidi_COPin <= x"0D" else
+							'1' when lidi_COPin = x"11" else
+							'0';
+	diex_write_A <=	'1' when lidi_COPout /= x"00" and lidi_COPout /= x"08" and lidi_COPout /= x"0E" and lidi_COPout /= x"0F" and lidi_COPout /= x"11" else
+							'0';
+	exmem_write_A <=	'1' when diex_COPout /= x"00" and  diex_COPout /= x"08" and  diex_COPout /= x"0E" and  diex_COPout /= x"0F" and  diex_COPout /= x"11" else
+							'0';
+							
+	--alea = 1 => Il faut sortir des NOP en attendant
+	alea <= 	'1' when lidi_read_Ain = '1' and diex_write_A = '1' and lidi_Ain = diex_Ain else
+				'1' when lidi_read_Ain = '1' and exmem_write_A = '1' and lidi_Ain = exmem_Ain else
+				'1' when lidi_read_Bin = '1' and diex_write_A = '1' and lidi_Bin = diex_Ain else
+				'1' when lidi_read_Bin = '1' and exmem_write_A = '1' and lidi_Bin = exmem_Ain else
+				'1' when lidi_read_Cin = '1' and diex_write_A = '1' and lidi_Cin = diex_Ain else
+				'1' when lidi_read_Cin = '1' and exmem_write_A = '1' and lidi_Cin = exmem_Ain else
+				'0';
 	
 	laram: bram16 PORT MAP (
 			-- System
@@ -164,7 +176,7 @@ BEGIN
 		)
 		PORT MAP (
 			-- System
-			sys_clk => alea_CLK,
+			sys_clk => CLK,
 			sys_rst => '1', --pas le reset
 			-- Master
 			di => ins_di,
@@ -186,8 +198,8 @@ BEGIN
           Ain => lidi_Ain,
           Bin => lidi_Bin,
           Cin => lidi_Cin,
-			 alea => '0',
-			 CLK => alea_CLK,
+			 alea => alea,
+			 CLK => CLK,
           COPout => lidi_COPout,
           Aout => lidi_Aout,
           Bout => lidi_Bout,
@@ -227,7 +239,7 @@ BEGIN
 					
 	diex_Cin <= reg_qb when ((lidi_COPout >= x"01" and lidi_COPout <= x"04") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") or (lidi_COPout=x"11")) else
 					lidi_Cout;
-					
+										
    pipeline_diex: entity work.pipeline PORT MAP (
           COPin => lidi_COPout,
           Ain => diex_Ain,
@@ -241,10 +253,11 @@ BEGIN
           Cout => diex_Cout
         );
 	
-	alu_ctrl <= "01" when (diex_COPout = x"01" or diex_COPout = x"10" or diex_COPout = x"11") else	--ADD
-					"01" when diex_COPout = x"02" else	--MUL
+	alu_ctrl <= "00" when (diex_COPout = x"01" or diex_COPout = x"10" or diex_COPout = x"11") else	--ADD
+					"01" when diex_COPout = x"02" else		--MUL
 					"10" when ((diex_COPout = x"03") or (diex_COPout >= x"09" and diex_COPout <= x"0D")) else	--SOU
-					"11" when diex_COPout = x"04";		--DIV
+					"11" when diex_COPout = x"04" else		--DIV
+					"00";
 	alu_B    <= diex_Aout when diex_COPout = x"11" else 
 					diex_Cout ;				
 -- Instantiate the ALU
@@ -272,16 +285,17 @@ BEGIN
           Ain => exmem_Ain,
           Bin => exmem_Bin,
           Cin => x"0000",
-			 alea => alea(2),
+			 alea => '0',
 			 CLK => CLK,
           COPout => exmem_COPout,
           Aout => exmem_Aout,
           Bout => exmem_Bout,
-          Cout => devnull
+          Cout => "----------------"
         );
 		  
 	data_a <= exmem_Bout when (exmem_COPout = x"07" or exmem_COPout = x"10") else	--LOAD /LOADR : get address from B 
-				 exmem_Aout when exmem_COPout = x"08" or exmem_COPout = x"11";			--STORE/STORR: get address from A
+				 exmem_Aout when exmem_COPout = x"08" or exmem_COPout = x"11" else	--STORE/STORR: get address from A
+				 x"0000";
 	data_we <= '1' when exmem_COPout = x"08" or exmem_COPout = x"11" else	--when STORE/STORR is called, we write to the memory
 				  '0';
 	data_do <= exmem_Bout;
@@ -291,19 +305,21 @@ BEGIN
           Ain => exmem_Aout,
           Bin => exmem_Bout,
           Cin => x"0000",
-			 alea => alea(3),
+			 alea => '0',
 			 CLK => CLK,
           COPout => memre_COPout,
           Aout => memre_Aout,
           Bout => memre_Bout,
-          Cout => devnull
+          Cout => "----------------"
         );
 
-
+	--incrémentation par CLK de notre IP; en cas d'aléa, l'IP ne s'incrémente pas
 	process
 	begin
-		wait until alea_CLK'event and alea_CLK='1';
-		ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(ins_a)) + 1,16));
+		wait until CLK'event and CLK='1';
+		if (alea = '0') then
+			ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(ins_a)) + 1,16));
+		end if;
 	end process;
 
 	-- Clock process definitions
@@ -314,5 +330,4 @@ BEGIN
 		CLK <= '0';
 		wait for CLK_period/2;
    end process;
-
 END;

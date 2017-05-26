@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2017-05-26T14:25:07</DateModified>
+  <DateModified>2017-05-26T18:23:44</DateModified>
   <ModuleName>vga_top</ModuleName>
   <SummaryTimeStamp>Unknown</SummaryTimeStamp>
   <SavedFilePath>/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/iseconfig/vga_top.xreport</SavedFilePath>

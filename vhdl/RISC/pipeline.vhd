@@ -47,16 +47,20 @@ architecture Behavioral of pipeline is
 begin
 	process(CLK)
 	begin
-		if (CLK='1') then
-			if alea='1' then
+		if CLK = '1' then
+			if alea = '1' then
 				COPout <= x"00";
+				Aout <= Ain;
+				Bout <= Bin;
+				Cout <= Cin;
 			else
 				COPout <= COPin;
+				Aout <= Ain;
+				Bout <= Bin;
+				Cout <= Cin;
 			end if;
-			Aout <= Ain;
-			Bout <= Bin;
-			Cout <= Cin;
 		end if;
 	end process;
+	
 end Behavioral;
 
