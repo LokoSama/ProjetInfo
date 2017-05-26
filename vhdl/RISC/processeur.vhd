@@ -77,6 +77,9 @@ ARCHITECTURE behavior OF processeur IS
 	signal ins_di : std_logic_vector(31 downto 0) := (others => '0');
 	signal ins_a : std_logic_vector(15 downto 0);
 	
+	signal alea : std_logic_vector(3 downto 0) := (others => '0');
+	signal alea_CLK : std_logic;
+	
 	signal data_a : std_logic_vector(15 downto 0);		--adr to read/write in memory
 	signal data_di : std_logic_vector(15 downto 0);		--value at address data_a in memory
 	signal data_we : std_logic;								--write order (true if 1)
@@ -93,6 +96,7 @@ ARCHITECTURE behavior OF processeur IS
 	signal lidi_Bout : std_logic_vector(15 downto 0);
 	signal lidi_Cout : std_logic_vector(15 downto 0);
 	
+	signal diex_Ain : std_logic_vector(15 downto 0);
 	signal diex_Bin : std_logic_vector(15 downto 0);
 	signal diex_Cin : std_logic_vector(15 downto 0);
 	signal diex_COPout : std_logic_vector(7 downto 0);
@@ -100,6 +104,7 @@ ARCHITECTURE behavior OF processeur IS
 	signal diex_Bout : std_logic_vector(15 downto 0);
 	signal diex_Cout : std_logic_vector(15 downto 0);
 	
+	signal exmem_Ain : std_logic_vector(15 downto 0);
 	signal exmem_Bin : std_logic_vector(15 downto 0);
 	signal exmem_COPout : std_logic_vector(7 downto 0);
 	signal exmem_Aout : std_logic_vector(15 downto 0);
@@ -110,12 +115,14 @@ ARCHITECTURE behavior OF processeur IS
 	signal memre_Bout : std_logic_vector(15 downto 0);
 	
 	signal reg_w : std_logic ;
+	signal reg_adrA : std_logic_vector(3 downto 0);
 	signal reg_adrB : std_logic_vector(3 downto 0);
 	signal reg_qa : std_logic_vector(15 downto 0);
 	signal reg_qb : std_logic_vector(15 downto 0);
 	signal reg_DATA : std_logic_vector(15 downto 0);
 	signal reg_adrW : std_logic_vector(3 downto 0);
 	
+	signal alu_B : std_logic_vector(15 downto 0);
 	signal alu_ctrl : std_logic_vector(1 downto 0);
 	signal alu_S : std_logic_vector(15 downto 0);
 	signal alu_flags : std_logic_vector (3 downto 0);
@@ -129,6 +136,17 @@ BEGIN
 	--NOTE:	on a implémenté un compteur d'instructions et grâce au BRAM32 du prof
 	--			on peut lire et exécuter le code dans notrecode.hex
 
+
+	--Gestion des aleas : clocks pouvant etre inhibees par le signal alea
+	alea_CLK <= '0' when (alea > x"0") else
+					CLK ;
+	alea <= "0001" when lidi_COPin= x"06" else
+				--"0011" when else
+				--"0111" when else
+				--"1111" when else
+				"0000";
+	
+	
 	laram: bram16 PORT MAP (
 			-- System
 			sys_clk => CLK,
@@ -146,7 +164,7 @@ BEGIN
 		)
 		PORT MAP (
 			-- System
-			sys_clk => CLK,
+			sys_clk => alea_CLK,
 			sys_rst => '1', --pas le reset
 			-- Master
 			di => ins_di,
@@ -163,31 +181,32 @@ BEGIN
           Bout => lidi_Bin,
           Cout => lidi_Cin
         );
-		  
 	pipeline_lidi: entity work.pipeline PORT MAP (
           COPin => lidi_COPin,
           Ain => lidi_Ain,
           Bin => lidi_Bin,
           Cin => lidi_Cin,
-			 CLK => CLK,
+			 alea => '0',
+			 CLK => alea_CLK,
           COPout => lidi_COPout,
           Aout => lidi_Aout,
           Bout => lidi_Bout,
           Cout => lidi_Cout
         );
 
-	reg_w <= '1' when ((memre_COPout >= x"01" and memre_COPout <= x"07") or (memre_COPout >= x"09" and memre_COPout <= x"0D")) else
+	reg_w <= '1' when ((memre_COPout >= x"01" and memre_COPout <= x"07") or (memre_COPout >= x"09" and memre_COPout <= x"0D") or (memre_COPout = x"10")) else
 				'0';
 	reg_adrW <= memre_Aout(3 downto 0);
-	reg_DATA <= data_di when memre_COPout = x"07" else
+	reg_DATA <= data_di when (memre_COPout = x"07" or memre_COPout = x"10") else
 					memre_Bout;
-	
+	reg_adrA <= lidi_Aout (3 downto 0) when lidi_COPout = x"11" else
+					lidi_Bout (3 downto 0);
 	reg_adrB <= lidi_Bout (3 downto 0) when lidi_COPout = x"08" else
 					lidi_Cout (3 downto 0);
-
+	
 	-- Instantiate the Register bench
    reg: entity work.bancRegistres PORT MAP (
-          adrA => lidi_Bout (3 downto 0),
+          adrA => reg_adrA,
           adrB => reg_adrB,
           adrW => reg_adrW,
           W => reg_W,
@@ -199,18 +218,22 @@ BEGIN
         );
 	
 	-- COP et AFC faits et fonctionnels, un "Undefined" a pop sans raison entre lidi_Bout et diex_Bin
-	diex_Bin <= reg_qa when ((lidi_COPout >= x"01" and lidi_COPout <= x"05") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D")) else
+	diex_Ain <= reg_qa when lidi_COPout = x"11" else
+					lidi_Aout;
+	
+	diex_Bin <= reg_qa when ((lidi_COPout >= x"01" and lidi_COPout <= x"05") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") or (lidi_COPout =x"10" )) else
 					reg_qb when lidi_COPout = x"08" else
 					lidi_Bout;
 					
-	diex_Cin <= reg_qb when ((lidi_COPout >= x"01" and lidi_COPout <= x"04") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D")) else
+	diex_Cin <= reg_qb when ((lidi_COPout >= x"01" and lidi_COPout <= x"04") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") or (lidi_COPout=x"11")) else
 					lidi_Cout;
 					
    pipeline_diex: entity work.pipeline PORT MAP (
           COPin => lidi_COPout,
-          Ain => lidi_Aout,
+          Ain => diex_Ain,
           Bin => diex_Bin,
           Cin => diex_Cin,
+			 alea => '0',
 			 CLK => CLK,
           COPout => diex_COPout,
           Aout => diex_Aout,
@@ -218,33 +241,38 @@ BEGIN
           Cout => diex_Cout
         );
 	
-	alu_ctrl <= "01" when diex_COPout = x"01" else	--ADD
+	alu_ctrl <= "01" when (diex_COPout = x"01" or diex_COPout = x"10" or diex_COPout = x"11") else	--ADD
 					"01" when diex_COPout = x"02" else	--MUL
 					"10" when ((diex_COPout = x"03") or (diex_COPout >= x"09" and diex_COPout <= x"0D")) else	--SOU
 					"11" when diex_COPout = x"04";		--DIV
-					
+	alu_B    <= diex_Aout when diex_COPout = x"11" else 
+					diex_Cout ;				
 -- Instantiate the ALU
    alulu: entity work.ALU PORT MAP (
           A => diex_Bout,
-          B => diex_Cout,
+          B => alu_B,
           S => alu_S,
           Ctrl_Alu => alu_ctrl,
           Flags => alu_flags			--NOZC (3210)
         );
 
-	exmem_Bin <= alu_S when (diex_COPout >= x"01" and diex_COPout <= x"04") else
+	exmem_Ain <= alu_S when diex_COPout = x"11" else
+					diex_Aout ;
+	exmem_Bin <= alu_S when ((diex_COPout >= x"01" and diex_COPout <= x"04") or diex_COPout = x"10" )else
 					 (padding & alu_flags(1)) when diex_COPout = x"09" else													-- EQU	:	 		  Z = 1
 					 (padding & alu_flags(3)) when diex_COPout = x"0A" else													-- INF	: N = 1
 					 (padding & ( alu_flags(3) or alu_flags(1) ) ) when diex_COPout = x"0B" else						-- INFEQU: N = 1 || Z = 1
 					 (padding & ( not(alu_flags(3)) and not (alu_flags(1)) )) when diex_COPout = x"0C" else		-- SUP	: N = 0 && Z = 0
 					 (padding & ( not(alu_flags(3))) ) when diex_COPout = x"0D" else										-- SUPEQU: N = 0
+					 diex_Cout when diex_COPout = x"11" else
 					 diex_Bout;						
 	
    pipeline_exmem: entity work.pipeline PORT MAP (
           COPin => diex_COPout,
-          Ain => diex_Aout,
+          Ain => exmem_Ain,
           Bin => exmem_Bin,
           Cin => x"0000",
+			 alea => alea(2),
 			 CLK => CLK,
           COPout => exmem_COPout,
           Aout => exmem_Aout,
@@ -252,9 +280,9 @@ BEGIN
           Cout => devnull
         );
 		  
-	data_a <= exmem_Bout when exmem_COPout = x"07" else	--LOAD : get address from B
-				 exmem_Aout when exmem_COPout = x"08";			--STORE: get address from A
-	data_we <= '1' when exmem_COPout = x"08" else	--when STORE is called, we write to the memory
+	data_a <= exmem_Bout when (exmem_COPout = x"07" or exmem_COPout = x"10") else	--LOAD /LOADR : get address from B 
+				 exmem_Aout when exmem_COPout = x"08" or exmem_COPout = x"11";			--STORE/STORR: get address from A
+	data_we <= '1' when exmem_COPout = x"08" or exmem_COPout = x"11" else	--when STORE/STORR is called, we write to the memory
 				  '0';
 	data_do <= exmem_Bout;
 
@@ -263,36 +291,18 @@ BEGIN
           Ain => exmem_Aout,
           Bin => exmem_Bout,
           Cin => x"0000",
+			 alea => alea(3),
 			 CLK => CLK,
           COPout => memre_COPout,
           Aout => memre_Aout,
           Bout => memre_Bout,
           Cout => devnull
         );
-		  
-		  
-		  
---	ins_di <= x"06034242" after 200 ns, x"06094343" after 300 ns, x"050103ff" after 400 ns,
---				 x"01020309" after 700 ns, x"03040903" after 800 ns, x"02050303" after 900 ns;
---	R3 <- 4242
---	R9 <- 4343
---	R1 <- R3
---	R2 <- R3 + R9
---	R4 <- R9 - R3
---	R5 <- R3 * R3
-
-
---	ins_di <= x"070812ff" after 200 ns, x"08ffff08" after 500 ns;
-
---	ins_di <= x"06054545" after 200 ns, x"06064848" after 500 ns, x"06074545" after 800 ns,
---				 x"09010507" after 1100 ns, x"0C020605" after 1500 ns, x"0C030506" after 1800 ns;
---
-	data_di <= x"4242";
 
 
 	process
 	begin
-		wait until CLK'event and CLK='1';
+		wait until alea_CLK'event and alea_CLK='1';
 		ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(ins_a)) + 1,16));
 	end process;
 

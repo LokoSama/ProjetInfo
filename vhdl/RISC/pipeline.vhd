@@ -35,6 +35,7 @@ entity pipeline is
            Bin : in  STD_LOGIC_VECTOR (15 downto 0);
            Cin : in  STD_LOGIC_VECTOR (15 downto 0);
 			  CLK : in STD_LOGIC ;
+			  alea : in STD_LOGIC ;
            COPout : out  STD_LOGIC_VECTOR (7 downto 0);
            Aout : out  STD_LOGIC_VECTOR (15 downto 0);
            Bout : out  STD_LOGIC_VECTOR (15 downto 0);
@@ -47,7 +48,11 @@ begin
 	process(CLK)
 	begin
 		if (CLK='1') then
-			COPout <= COPin;
+			if alea='1' then
+				COPout <= x"00";
+			else
+				COPout <= COPin;
+			end if;
 			Aout <= Ain;
 			Bout <= Bin;
 			Cout <= Cin;
