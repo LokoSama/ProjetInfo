@@ -1,10 +1,11 @@
-
 int main () {
-	int i = 0;
-	while (i < 3) {
-		i = i + 1;
+	if (1)  {
+	int a = -1;
 	}
-	return 42;
+	else {
+	int b ;
+	}	
+	return 0;
 }
 
 

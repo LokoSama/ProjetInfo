@@ -108,6 +108,11 @@ void Jump(int typeJump) { //typeJump attend JMP ou JMPC
 	}
 }
 
+int to_signed (int a) {
+if (a <0) return ((~(-a)) +1 )& 0xff;
+else return a;
+}
+
 void print_code () {
   FILE *asmcode;
   printf ("ENTREE print_code\n");
@@ -115,11 +120,11 @@ void print_code () {
   int i;
   for (i = 0; i < tab_code.index; i++) {
   	if (tab_code.tab[i][2] == NOTU)
-  		fprintf (asmcode, "%d %d _ _\n", tab_code.tab[i][0], tab_code.tab[i][1]);
+  		fprintf (asmcode, "%.2X%.2XFFFF\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]));
     else if (tab_code.tab[i][3] == NOTU)
-			fprintf (asmcode, "%d %d %d _\n", tab_code.tab[i][0], tab_code.tab[i][1], tab_code.tab[i][2]);
+			fprintf (asmcode, "%.2X%.2X%.2XFF\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]), to_signed(tab_code.tab[i][2]));
     else
-			fprintf (asmcode, "%d %d %d %d \n", tab_code.tab[i][0], tab_code.tab[i][1], tab_code.tab[i][2], tab_code.tab[i][3]);
+			fprintf (asmcode, "%.2X%.2X%.2X%.2X\n", to_signed(tab_code.tab[i][0]), to_signed(tab_code.tab[i][1]), to_signed(tab_code.tab[i][2]), to_signed(tab_code.tab[i][3]));
       //printf ("SORTIE print_code\n");
   }
 
