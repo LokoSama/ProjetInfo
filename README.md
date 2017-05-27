@@ -1,7 +1,9 @@
-# Projet Informatique : compilateur C et processeur RISC pipeliné
+# Projet Informatique : compilateur C et microprocesseur RISC 
 
 BASSO Jérémy et BUGEL Sandor
+
 INSA Toulouse 4 IR A2
+
 2016/2017
 
 
