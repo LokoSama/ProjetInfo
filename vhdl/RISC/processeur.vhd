@@ -1,39 +1,20 @@
 --------------------------------------------------------------------------------
--- Company: 
--- Engineer:
+-- Company: INSA
+-- Engineer: Jérémy Basso & Sandor Bügel
 --
 -- Create Date:   14:36:11 05/02/2017
--- Design Name:   
--- Module Name:   /home/basso/Bureau/Projet_Info/vhdl/RISC/processeur.vhd
--- Project Name:  RISC
--- Target Device:  
--- Tool versions:  
--- Description:   
--- 
--- VHDL Test Bench Created by ISE for module: pipeline
--- 
--- Dependencies:
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
+-- Project Name:  Projet Microprocesseur
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.numeric_std.ALL;
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---USE ieee.numeric_std.ALL;
  
 ENTITY processeur IS
 END processeur;
  
 ARCHITECTURE behavior OF processeur IS 
- 
-    -- Component Declaration for the Unit Under Test (UUT)
-	 
+
 	COMPONENT bram16
 		GENERIC (
 			init_file : String := "none";
@@ -68,14 +49,16 @@ ARCHITECTURE behavior OF processeur IS
 	 
 	--CLOCK
 	signal CLK : std_logic := '0';
+	signal CLK_alea : std_logic := '0';
    constant CLK_period : time := 100 ns;
 	
 	--AUX
 	constant padding : std_logic_vector(14 downto 0) := (others => '0');
 	 
    --SIGNAUX
+	signal RST_reg : std_logic := '0';
 	signal ins_di : std_logic_vector(31 downto 0) := (others => '0');
-	signal ins_a : std_logic_vector(15 downto 0);
+	signal ins_a : std_logic_vector(15 downto 0) := (others => '0');
 	
 	--détection d'aléas
 	signal alea : std_logic := '0';
@@ -88,7 +71,7 @@ ARCHITECTURE behavior OF processeur IS
 	signal data_a : std_logic_vector(15 downto 0);		--adr to read/write in memory
 	signal data_di : std_logic_vector(15 downto 0);		--value at address data_a in memory
 	signal data_we : std_logic;								--write order (true if 1)
-	signal data_do : std_logic_vector (15 downto 0);
+	signal data_do : std_logic_vector (15 downto 0) := (others => '0');
 		
    signal lidi_COPin : std_logic_vector(7 downto 0);
 	signal lidi_Ain : std_logic_vector(15 downto 0);
@@ -117,23 +100,19 @@ ARCHITECTURE behavior OF processeur IS
 	signal memre_Aout : std_logic_vector(15 downto 0);
 	signal memre_Bout : std_logic_vector(15 downto 0);
 	
-	signal reg_w : std_logic ;
 	signal reg_adrA : std_logic_vector(3 downto 0);
 	signal reg_adrB : std_logic_vector(3 downto 0);
 	signal reg_qa : std_logic_vector(15 downto 0);
 	signal reg_qb : std_logic_vector(15 downto 0);
-	signal reg_DATA : std_logic_vector(15 downto 0);
 	signal reg_adrW : std_logic_vector(3 downto 0);
+	signal reg_w : std_logic ;
+	signal reg_DATA : std_logic_vector(15 downto 0);
 	
 	signal alu_B : std_logic_vector(15 downto 0);
-	signal alu_ctrl : std_logic_vector(1 downto 0);
 	signal alu_S : std_logic_vector(15 downto 0);
+	signal alu_ctrl : std_logic_vector(1 downto 0);
 	signal alu_flags : std_logic_vector (3 downto 0);
-	
 BEGIN
-
-	--TODO: GESTION JMP, JMPC, JMPR
-
 	--Détection des aléas
 	----Ces 5 signaux auxiliaires identifient si on va lire un registre alors qu'une commande d'écriture de registre est dans un des deux étages suivants
 	lidi_read_Ain <= 	'1' when lidi_COPin = x"11" else '0';
@@ -150,14 +129,18 @@ BEGIN
 	exmem_write_A <=	'1' when diex_COPout /= x"00" and  diex_COPout /= x"08" and  diex_COPout /= x"0E" and  diex_COPout /= x"0F" and  diex_COPout /= x"11" else
 							'0';
 							
-	--alea = 1 => Il faut sortir des NOP en attendant
+	--Si alea vaut 1, on sort des NOP
 	alea <= 	'1' when lidi_read_Ain = '1' and diex_write_A = '1' and lidi_Ain = diex_Ain else
 				'1' when lidi_read_Ain = '1' and exmem_write_A = '1' and lidi_Ain = exmem_Ain else
 				'1' when lidi_read_Bin = '1' and diex_write_A = '1' and lidi_Bin = diex_Ain else
 				'1' when lidi_read_Bin = '1' and exmem_write_A = '1' and lidi_Bin = exmem_Ain else
 				'1' when lidi_read_Cin = '1' and diex_write_A = '1' and lidi_Cin = diex_Ain else
 				'1' when lidi_read_Cin = '1' and exmem_write_A = '1' and lidi_Cin = exmem_Ain else
+				'1' when lidi_COPout = x"0E" or diex_COPout = x"0E" else --si on JMP, on clear les 2 instructions suivantes en provoquant un aléa
+				'1' when lidi_COPout = x"0F" or (diex_COPout = x"0F" and alu_flags = 2) else --si on JMPC, on clear l'instruction suivante dans le doute et on clear celle d'après si la condition est vraie
+				'1' when lidi_COPout = x"12" or diex_COPout = x"12" else --si on JMPR, on clear les instructions suivantes en provoquant un aléa
 				'0';
+	
 	
 	laram: bram16 PORT MAP (
 			-- System
@@ -170,13 +153,17 @@ BEGIN
 			do => data_do
 	    );
 		 
+	--CLK qui s'interrompt en cas d'aléa 
+	CLK_alea <= '0' when alea = '1' else
+					CLK;
+					
 	lecode: bram32
 		GENERIC MAP (
 			init_file => "notrecode.hex"
 		)
 		PORT MAP (
 			-- System
-			sys_clk => CLK,
+			sys_clk => CLK_alea,
 			sys_rst => '1', --pas le reset
 			-- Master
 			di => ins_di,
@@ -185,9 +172,8 @@ BEGIN
 			do => x"00000000"
 	    );
 
-	-- Instantiate the Decode
    decodeur: entity work.decode PORT MAP (
-          ins_di => ins_di,	--TODO
+          ins_di => ins_di,
           COPout => lidi_COPin,
           Aout => lidi_Ain,
           Bout => lidi_Bin,
@@ -198,23 +184,26 @@ BEGIN
           Ain => lidi_Ain,
           Bin => lidi_Bin,
           Cin => lidi_Cin,
-			 alea => alea,
 			 CLK => CLK,
+			 alea => alea,
           COPout => lidi_COPout,
           Aout => lidi_Aout,
           Bout => lidi_Bout,
           Cout => lidi_Cout
         );
 
-	reg_w <= '1' when ((memre_COPout >= x"01" and memre_COPout <= x"07") or (memre_COPout >= x"09" and memre_COPout <= x"0D") or (memre_COPout = x"10")) else
-				'0';
-	reg_adrW <= memre_Aout(3 downto 0);
-	reg_DATA <= data_di when (memre_COPout = x"07" or memre_COPout = x"10") else
-					memre_Bout;
-	reg_adrA <= lidi_Aout (3 downto 0) when lidi_COPout = x"11" else
+	reg_adrA <= lidi_Aout (3 downto 0) when lidi_COPout = x"11" or lidi_COPout = x"12" else
 					lidi_Bout (3 downto 0);
 	reg_adrB <= lidi_Bout (3 downto 0) when lidi_COPout = x"08" else
 					lidi_Cout (3 downto 0);
+
+	reg_w <= '1' when (memre_COPout >= x"01" and memre_COPout <= x"07") or (memre_COPout >= x"09" and memre_COPout <= x"0D") or memre_COPout = x"10" else
+				'0';
+	reg_adrW <= memre_Aout(3 downto 0);
+	reg_DATA <= data_di when memre_COPout = x"07" or memre_COPout = x"10" else
+					memre_Bout;
+	
+	RST_reg <= '1' after CLK_period;
 	
 	-- Instantiate the Register bench
    reg: entity work.bancRegistres PORT MAP (
@@ -223,21 +212,19 @@ BEGIN
           adrW => reg_adrW,
           W => reg_W,
           DATA => reg_DATA,
-          RST => '1', --TODO
+          RST => RST_reg,
           CLK => CLK,
           QA => reg_qa,
           QB => reg_qb
         );
 	
-	-- COP et AFC faits et fonctionnels, un "Undefined" a pop sans raison entre lidi_Bout et diex_Bin
-	diex_Ain <= reg_qa when lidi_COPout = x"11" else
+	diex_Ain <= reg_qa when lidi_COPout = x"11" or lidi_COPout = x"12" else
 					lidi_Aout;
-	
-	diex_Bin <= reg_qa when ((lidi_COPout >= x"01" and lidi_COPout <= x"05") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") or (lidi_COPout =x"10" )) else
+	diex_Bin <= reg_qa when (lidi_COPout >= x"01" and lidi_COPout <= x"05") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") else
+					reg_qa when lidi_COPout = x"0F" or lidi_COPout =x"10" else
 					reg_qb when lidi_COPout = x"08" else
-					lidi_Bout;
-					
-	diex_Cin <= reg_qb when ((lidi_COPout >= x"01" and lidi_COPout <= x"04") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") or (lidi_COPout=x"11")) else
+					lidi_Bout;	
+	diex_Cin <= reg_qb when (lidi_COPout >= x"01" and lidi_COPout <= x"04") or (lidi_COPout >= x"09" and lidi_COPout <= x"0D") or lidi_COPout=x"11" else
 					lidi_Cout;
 										
    pipeline_diex: entity work.pipeline PORT MAP (
@@ -253,13 +240,15 @@ BEGIN
           Cout => diex_Cout
         );
 	
-	alu_ctrl <= "00" when (diex_COPout = x"01" or diex_COPout = x"10" or diex_COPout = x"11") else	--ADD
+	alu_ctrl <= "00" when diex_COPout = x"01" or (diex_COPout >= x"0F" and diex_COPout <= x"11") else	--ADD
 					"01" when diex_COPout = x"02" else		--MUL
-					"10" when ((diex_COPout = x"03") or (diex_COPout >= x"09" and diex_COPout <= x"0D")) else	--SOU
+					"10" when diex_COPout = x"03" or (diex_COPout >= x"09" and diex_COPout <= x"0D") else	--SOU
 					"11" when diex_COPout = x"04" else		--DIV
 					"00";
 	alu_B    <= diex_Aout when diex_COPout = x"11" else 
-					diex_Cout ;				
+					x"0000" when diex_COPout = x"0F" else --on fait une addition avec 0 pour raise des flags
+					diex_Cout ;
+					
 -- Instantiate the ALU
    alulu: entity work.ALU PORT MAP (
           A => diex_Bout,
@@ -267,7 +256,7 @@ BEGIN
           S => alu_S,
           Ctrl_Alu => alu_ctrl,
           Flags => alu_flags			--NOZC (3210)
-        );
+        );	
 
 	exmem_Ain <= alu_S when diex_COPout = x"11" else
 					diex_Aout ;
@@ -293,7 +282,7 @@ BEGIN
           Cout => "----------------"
         );
 		  
-	data_a <= exmem_Bout when (exmem_COPout = x"07" or exmem_COPout = x"10") else	--LOAD /LOADR : get address from B 
+	data_a <= exmem_Bout when exmem_COPout = x"07" or exmem_COPout = x"10" else	--LOAD /LOADR : get address from B 
 				 exmem_Aout when exmem_COPout = x"08" or exmem_COPout = x"11" else	--STORE/STORR: get address from A
 				 x"0000";
 	data_we <= '1' when exmem_COPout = x"08" or exmem_COPout = x"11" else	--when STORE/STORR is called, we write to the memory
@@ -312,13 +301,21 @@ BEGIN
           Bout => memre_Bout,
           Cout => "----------------"
         );
-
-	--incrémentation par CLK de notre IP; en cas d'aléa, l'IP ne s'incrémente pas
-	process
+	
+	--incrémentation par CLK de notre Instruction Pointer; en cas d'aléa, l'IP ne s'incrémente pas
+	--également : implémentation JMP
+	process(CLK, alea)
 	begin
-		wait until CLK'event and CLK='1';
-		if (alea = '0') then
-			ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(ins_a)) + 1,16));
+		if CLK = '1' then
+			if diex_COPout = x"0E" or (diex_COPout = x"0F" and alu_flags = 2) or diex_COPout = x"12" then
+				ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(diex_Aout)) * 4,16));
+			elsif (alea = '0') then
+				ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(ins_a)) + 4,16));
+			end if;
+		end if;
+		--l'apparition d'un alea sur l'instruction courante fait revenir l'IP sur cette instruction
+		if rising_edge(alea) then
+			ins_a <= std_logic_vector(to_unsigned(to_integer(IEEE.numeric_std.unsigned(ins_a)) - 4,16));
 		end if;
 	end process;
 

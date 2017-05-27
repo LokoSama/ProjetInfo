@@ -5,16 +5,16 @@
      behavior or data corruption.  It is strongly advised that
      users do not edit the contents of this file. -->
 <messages>
-<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 17: Parameter declaration becomes local in <arg fmt="%s" index="1">bram32</arg> with formal parameter declaration list
+<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 17: Parameter declaration becomes local in <arg fmt="%s" index="1">bram32</arg> with formal parameter declaration list
 </msg>
 
-<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 18: Parameter declaration becomes local in <arg fmt="%s" index="1">bram32</arg> with formal parameter declaration list
+<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 18: Parameter declaration becomes local in <arg fmt="%s" index="1">bram32</arg> with formal parameter declaration list
 </msg>
 
-<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 17: Parameter declaration becomes local in <arg fmt="%s" index="1">bram16</arg> with formal parameter declaration list
+<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 17: Parameter declaration becomes local in <arg fmt="%s" index="1">bram16</arg> with formal parameter declaration list
 </msg>
 
-<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 18: Parameter declaration becomes local in <arg fmt="%s" index="1">bram16</arg> with formal parameter declaration list
+<msg type="warning" file="HDLCompiler" num="693" delta="unknown" >"/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 18: Parameter declaration becomes local in <arg fmt="%s" index="1">bram16</arg> with formal parameter declaration list
 </msg>
 
 </messages>

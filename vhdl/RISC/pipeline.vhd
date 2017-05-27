@@ -50,9 +50,9 @@ begin
 		if CLK = '1' then
 			if alea = '1' then
 				COPout <= x"00";
-				Aout <= Ain;
-				Bout <= Bin;
-				Cout <= Cin;
+				Aout <= x"0000";
+				Bout <= x"0000";
+				Cout <= x"0000";
 			else
 				COPout <= COPin;
 				Aout <= Ain;

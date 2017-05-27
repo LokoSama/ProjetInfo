@@ -1,0 +1,5 @@
+verilog work "cores/vga_video.v"
+verilog work "cores/vga_text_mode.v"
+verilog work "cores/vga_mem_text.v"
+verilog work "cores/vga_mem_font.v"
+verilog work "cores/vga_top.v"

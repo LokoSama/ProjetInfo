@@ -21,7 +21,7 @@
 #include <malloc.h>
 #define alloca _alloca
 #endif
-static const char *ng0 = "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/pipeline.vhd";
+static const char *ng0 = "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/pipeline.vhd";
 
 
 
@@ -106,7 +106,7 @@ LAB7:    xsi_set_current_line(57, ng0);
 LAB6:    goto LAB3;
 
 LAB5:    xsi_set_current_line(52, ng0);
-    t1 = (t0 + 6514);
+    t1 = (t0 + 6418);
     t9 = (t0 + 4024);
     t10 = (t9 + 56U);
     t11 = *((char **)t10);
@@ -115,35 +115,32 @@ LAB5:    xsi_set_current_line(52, ng0);
     memcpy(t13, t1, 8U);
     xsi_driver_first_trans_fast_port(t9);
     xsi_set_current_line(53, ng0);
-    t1 = (t0 + 1192U);
-    t2 = *((char **)t1);
-    t1 = (t0 + 4088);
-    t5 = (t1 + 56U);
-    t8 = *((char **)t5);
-    t9 = (t8 + 56U);
-    t10 = *((char **)t9);
-    memcpy(t10, t2, 16U);
-    xsi_driver_first_trans_fast_port(t1);
+    t1 = (t0 + 6426);
+    t5 = (t0 + 4088);
+    t8 = (t5 + 56U);
+    t9 = *((char **)t8);
+    t10 = (t9 + 56U);
+    t11 = *((char **)t10);
+    memcpy(t11, t1, 16U);
+    xsi_driver_first_trans_fast_port(t5);
     xsi_set_current_line(54, ng0);
-    t1 = (t0 + 1352U);
-    t2 = *((char **)t1);
-    t1 = (t0 + 4152);
-    t5 = (t1 + 56U);
-    t8 = *((char **)t5);
-    t9 = (t8 + 56U);
-    t10 = *((char **)t9);
-    memcpy(t10, t2, 16U);
-    xsi_driver_first_trans_fast_port(t1);
+    t1 = (t0 + 6442);
+    t5 = (t0 + 4152);
+    t8 = (t5 + 56U);
+    t9 = *((char **)t8);
+    t10 = (t9 + 56U);
+    t11 = *((char **)t10);
+    memcpy(t11, t1, 16U);
+    xsi_driver_first_trans_fast_port(t5);
     xsi_set_current_line(55, ng0);
-    t1 = (t0 + 1512U);
-    t2 = *((char **)t1);
-    t1 = (t0 + 4216);
-    t5 = (t1 + 56U);
-    t8 = *((char **)t5);
-    t9 = (t8 + 56U);
-    t10 = *((char **)t9);
-    memcpy(t10, t2, 16U);
-    xsi_driver_first_trans_fast_port(t1);
+    t1 = (t0 + 6458);
+    t5 = (t0 + 4216);
+    t8 = (t5 + 56U);
+    t9 = *((char **)t8);
+    t10 = (t9 + 56U);
+    t11 = *((char **)t10);
+    memcpy(t11, t1, 16U);
+    xsi_driver_first_trans_fast_port(t5);
     goto LAB6;
 
 }

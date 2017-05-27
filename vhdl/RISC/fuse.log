@@ -1,24 +1,24 @@
-Running: /usr/local/Xilinx.ISE/13.4/ISE_DS/ISE/bin/lin64/unwrapped/fuse -intstyle ise -incremental -lib unisims_ver -lib unimacro_ver -lib xilinxcorelib_ver -lib secureip -o /home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/processeur_isim_beh.exe -prj /home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/processeur_beh.prj work.processeur work.glbl 
+Running: /usr/local/Xilinx.ISE/13.4/ISE_DS/ISE/bin/lin64/unwrapped/fuse -intstyle ise -incremental -lib unisims_ver -lib unimacro_ver -lib xilinxcorelib_ver -lib secureip -o /home/sbugel/Bureau/ProjetInfo/vhdl/RISC/processeur_isim_beh.exe -prj /home/sbugel/Bureau/ProjetInfo/vhdl/RISC/processeur_beh.prj work.processeur work.glbl 
 ISim O.87xd (signature 0x8ddf5b5d)
 Number of CPUs detected in this system: 4
 Turning on mult-threading, number of parallel sub-compilation jobs: 8 
 Determining compilation order of HDL files
-Analyzing Verilog file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram32.v" into library work
-WARNING:HDLCompiler:693 - "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 17: Parameter declaration becomes local in bram32 with formal parameter declaration list
-WARNING:HDLCompiler:693 - "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 18: Parameter declaration becomes local in bram32 with formal parameter declaration list
-Analyzing Verilog file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram16.v" into library work
-WARNING:HDLCompiler:693 - "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 17: Parameter declaration becomes local in bram16 with formal parameter declaration list
-WARNING:HDLCompiler:693 - "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 18: Parameter declaration becomes local in bram16 with formal parameter declaration list
+Analyzing Verilog file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram32.v" into library work
+WARNING:HDLCompiler:693 - "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 17: Parameter declaration becomes local in bram32 with formal parameter declaration list
+WARNING:HDLCompiler:693 - "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram32.v" Line 18: Parameter declaration becomes local in bram32 with formal parameter declaration list
+Analyzing Verilog file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram16.v" into library work
+WARNING:HDLCompiler:693 - "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 17: Parameter declaration becomes local in bram16 with formal parameter declaration list
+WARNING:HDLCompiler:693 - "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/cores/bram16.v" Line 18: Parameter declaration becomes local in bram16 with formal parameter declaration list
 Analyzing Verilog file "/usr/local/Xilinx.ISE/13.4/ISE_DS/ISE//verilog/src/glbl.v" into library work
-Parsing VHDL file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/pipeline.vhd" into library work
-Parsing VHDL file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/decode.vhd" into library work
-Parsing VHDL file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/bancRegistres.vhd" into library work
-Parsing VHDL file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/ALU.vhd" into library work
-Parsing VHDL file "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/processeur.vhd" into library work
+Parsing VHDL file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/pipeline.vhd" into library work
+Parsing VHDL file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/decode.vhd" into library work
+Parsing VHDL file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/bancRegistres.vhd" into library work
+Parsing VHDL file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/ALU.vhd" into library work
+Parsing VHDL file "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/processeur.vhd" into library work
 Starting static elaboration
 Completed static elaboration
-Fuse Memory Usage: 97760 KB
-Fuse CPU Usage: 850 ms
+Fuse Memory Usage: 97768 KB
+Fuse CPU Usage: 970 ms
 Compiling module glbl
 Compiling module bram16("none",11)
 Compiling module bram32("notrecode.hex",11)
@@ -37,7 +37,7 @@ Time Resolution for simulation is 1ps.
 Waiting for 1 sub-compilation(s) to finish...
 Compiled 15 VHDL Units
 Compiled 3 Verilog Units
-Built simulation executable /home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/processeur_isim_beh.exe
-Fuse Memory Usage: 678984 KB
-Fuse CPU Usage: 1020 ms
-GCC CPU Usage: 460 ms
+Built simulation executable /home/sbugel/Bureau/ProjetInfo/vhdl/RISC/processeur_isim_beh.exe
+Fuse Memory Usage: 678996 KB
+Fuse CPU Usage: 1220 ms
+GCC CPU Usage: 3820 ms

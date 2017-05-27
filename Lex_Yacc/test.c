@@ -1,9 +1,9 @@
 int main () {
 	if (1)  {
-	int a = -1;
+	int a;
 	}
 	else {
-	int b ;
+	int b;
 	}	
 	return 0;
 }

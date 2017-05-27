@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -lib "unisims_ver" -lib "unimacro_ver" -lib "xilinxcorelib_ver" -lib "secureip" -o "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/processeur_isim_beh.exe" -prj "/home/basso/Bureau/ProjGit/ProjetInfo/vhdl/RISC/processeur_beh.prj" "work.processeur" "work.glbl" 
+-intstyle "ise" -incremental -lib "unisims_ver" -lib "unimacro_ver" -lib "xilinxcorelib_ver" -lib "secureip" -o "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/processeur_isim_beh.exe" -prj "/home/sbugel/Bureau/ProjetInfo/vhdl/RISC/processeur_beh.prj" "work.processeur" "work.glbl" 
