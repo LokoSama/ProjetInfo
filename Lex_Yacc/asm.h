@@ -26,7 +26,7 @@
 //definition pour le registre BasePile
 #define BP 13
 
-#define NOTU -10  //NOT_USED
+#define NOTU 255  //NOT_USED
 
 struct tab_instrus {
 	int tab[2048][4];
