@@ -1,4 +1,5 @@
 #include "asm.h"
+#include "boucle.h"
 
 void Init_asm () {
 	// Tableau contenant le code ASM

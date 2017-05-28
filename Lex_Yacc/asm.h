@@ -42,6 +42,7 @@ void And();
 void ComparaisonLogique(int operateur);
 void Not();
 void print_code();
+void Jump(int typeJump);
 
 
 #endif
